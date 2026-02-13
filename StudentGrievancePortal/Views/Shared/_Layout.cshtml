@@ -1,0 +1,267 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - BVICAM Grievance ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        .profile-dropdown-toggle {
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .profile-dropdown-toggle:hover {
+                background-color: rgba(255, 255, 255, 0.2) !important;
+            }
+
+        .profile-avatar-circle {
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            color: #0b3c6f; 
+            border-radius: 50% !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logout-icon-circle {
+            width: 30px;
+            height: 30px;
+            background-color: #fff5f5;
+            border-radius: 50% !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .animate {
+            animation-duration: 0.25s;
+            animation-fill-mode: both;
+        }
+
+        @@keyframes slideIn {
+            0% {
+                transform: translateY(1rem);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0rem);
+                opacity: 1;
+            }
+        }
+
+        .slideIn {
+            animation-name: slideIn;
+        }
+
+        .dropdown-menu {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="erp-top-bar text-white small">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <span>
+                <i class="bi bi-mortarboard-fill"></i>
+                Bharati Vidyapeeth (Deemed University)
+            </span>
+            <span class="d-none d-md-inline">
+                BVICAM | Student Grievance Redressal System
+            </span>
+        </div>
+    </div>
+
+    <div class="bvicam-header py-3">
+        <div class="container-fluid d-flex align-items-center">
+            <img src="~/images/bvicam-logo.png" alt="BVICAM Logo" class="bvicam-logo me-3" />
+            <div>
+                <h5 class="fw-bold mb-0">
+                    Bharati Vidyapeeth’s Institute of Computer Applications & Management
+                </h5>
+                <div class="text-muted small">
+                    ERP Integrated Grievance Management Portal
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bvicam-navbar shadow-sm sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center fw-bold" asp-controller="Home" asp-action="Index">
+                <img src="~/images/bvicam-logo.png" alt="BVICAM Logo" class="navbar-logo me-2" />
+                <span class="d-none d-md-inline">BVICAM GRIEVANCES</span>
+            </a>
+
+            <button class="navbar-toggler border-0" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @{
+                        var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
+                        var roleId = HttpContextAccessor.HttpContext.Session.GetInt32("UserRole");
+                    }
+
+                    @if (userId != null && roleId == 1)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Student" asp-action="Index">
+                                <i class="bi bi-file-text"></i> My Grievances
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Student" asp-action="Create">
+                                <i class="bi bi-plus-circle"></i> Submit Grievance
+                            </a>
+                        </li>
+                    }
+
+                    @if (userId != null && roleId == 2)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Coordinator" asp-action="Dashboard">
+                                <i class="bi bi-clock-history"></i> Pending Cases
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" asp-controller="Admin" asp-action="Summary">
+                                <i class="bi bi-bar-chart-line-fill"></i> Department Report
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                <ul class="navbar-nav ms-auto align-items-center">
+                    @if (userId != null)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center py-1 px-3 rounded-pill profile-dropdown-toggle text-white"
+                               href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="profile-avatar-circle me-2">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                                <span class="fw-semibold small">
+                                    @HttpContextAccessor.HttpContext.Session.GetString("UserName")
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end animate slideIn mt-2 p-2">
+                                <li>
+                                    <div class="dropdown-header px-3 py-2">
+                                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Authenticated As</small>
+                                        <div class="fw-bold text-dark">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</div>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item rounded-3 d-flex align-items-center py-2" asp-controller="Account" asp-action="Logout">
+                                        <div class="logout-icon-circle me-2">
+                                            <i class="bi bi-box-arrow-right text-danger"></i>
+                                        </div>
+                                        <span class="text-danger fw-semibold">Sign Out</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="btn btn-danger btn-sm px-4 rounded-pill fw-bold" asp-controller="Account" asp-action="Login">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-5">
+        @RenderBody()
+    </main>
+
+    <footer class="bvicam-footer py-3">
+        <div class="container text-center small">
+            <div class="fw-semibold">
+                © 2026 Bharati Vidyapeeth (Deemed University)
+            </div>
+            <div class="text-muted">
+                BVICAM ERP – Student Grievance Management Module
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Chatbot Widget -->
+    <div id="chatbot-toggle" title="Chat with us">
+        <i class="bi bi-chat-dots-fill" id="chatbot-icon-open"></i>
+        <i class="bi bi-x-lg d-none" id="chatbot-icon-close"></i>
+        <span class="chatbot-badge d-none" id="chatbot-badge">1</span>
+    </div>
+
+    <div id="chatbot-window" class="d-none">
+        <div id="chatbot-header">
+            <div class="d-flex align-items-center">
+                <div class="chatbot-avatar me-2">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <div>
+                    <div class="fw-bold">BVICAM Support</div>
+                    <div class="chatbot-status"><span class="chatbot-status-dot"></span> Online</div>
+                </div>
+            </div>
+            <button id="chatbot-close" class="btn btn-sm text-white p-0" title="Close">
+                <i class="bi bi-dash-lg"></i>
+            </button>
+        </div>
+
+        <div id="chatbot-messages">
+            <div class="chat-bubble assistant">
+                <div class="chat-bubble-content">
+                    Hello! 👋 I'm the BVICAM Grievance Support Bot. How can I help you today?
+                </div>
+                <div class="chat-time">Just now</div>
+            </div>
+            <div id="chatbot-suggestions">
+                <button class="chatbot-chip" data-msg="How do I submit a grievance?">📝  Submit Grievance</button>
+                <button class="chatbot-chip" data-msg="How do I track my grievance?">🔍 Track Status</button>
+                <button class="chatbot-chip" data-msg="What types of grievances can I submit?">📋 Grievance Types</button>
+                <button class="chatbot-chip" data-msg="Is my identity confidential?">🔒 Privacy Info</button>
+                <button class="chatbot-chip" data-msg="How do I login?">🔑 Login Help</button>
+                <button class="chatbot-chip" data-msg="Contact support">📞 Contact</button>
+            </div>
+        </div>
+
+        <div id="chatbot-input-area">
+            <input type="text" id="chatbot-input" placeholder="Type your question..." autocomplete="off" />
+            <button id="chatbot-send" title="Send">
+                <i class="bi bi-send-fill"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/chatbot.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

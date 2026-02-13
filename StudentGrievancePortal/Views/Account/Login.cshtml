@@ -1,0 +1,196 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    :root {
+        --bvicam-blue: #0b3c6f;
+        --bvicam-dark: #082f55;
+        --border-color: #dee2e6;
+    }
+
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .login-container {
+        max-width: 450px;
+        margin: 80px auto;
+    }
+
+    .login-card {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .login-header {
+        background-color: var(--bvicam-blue);
+        color: white;
+        padding: 25px;
+        border-radius: 7px 7px 0 0;
+        text-align: center;
+    }
+
+    .role-toggle-group {
+        display: flex;
+        background: #f1f3f5;
+        padding: 5px;
+        border-radius: 6px;
+        margin-bottom: 25px;
+    }
+
+    .role-btn {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #495057;
+        transition: 0.2s;
+        border-radius: 4px;
+        border: none;
+        background: transparent;
+    }
+
+        .role-btn.active {
+            background: white;
+            color: var(--bvicam-blue);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #343a40;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        /* border-right: none; */
+    }
+
+    .input-group .form-control {
+        border-left: none;
+        padding: 12px;
+    }
+
+    .password-toggle {
+        background-color: #ffffff;
+        border-left: none;
+        cursor: pointer;
+        color: #6c757d;
+        transition: color 0.2s;
+    }
+
+        .password-toggle:hover {
+            color: var(--bvicam-blue);
+        }
+
+    .form-control:focus {
+        border-color: var(--border-color);
+        box-shadow: none;
+    }
+
+    .btn-login {
+        background-color: var(--bvicam-blue);
+        color: white;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 14px;
+        border: none;
+        width: 100%;
+        transition: background 0.2s;
+    }
+
+        .btn-login:hover {
+            background-color: var(--bvicam-dark);
+            color: white;
+        }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h4 class="mb-0 fw-bold">Grievance ERP Access</h4>
+            <small class="opacity-75">Sign in to your account</small>
+        </div>
+
+        <div class="card-body p-4">
+            <form asp-action="Login" method="post">
+
+                <div class="role-toggle-group" id="roleGroup">
+                    <button type="button" class="role-btn active" onclick="setRole(1, this)">
+                        <i class="bi bi-mortarboard me-1"></i> Student
+                    </button>
+                    <button type="button" class="role-btn" onclick="setRole(2, this)">
+                        <i class="bi bi-person-badge me-1"></i> Coordinator
+                    </button>
+                    <input type="hidden" name="userRole" id="userRole" value="1" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">ERP ID / Enrollment No.</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input name="erpId" class="form-control" required placeholder="e.g. STU001 or CC001" />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Secure Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input name="password" type="password" id="passwordField" class="form-control" required placeholder="••••••••"/>
+                        <span class="input-group-text password-toggle" onclick="togglePassword()">
+                            <i class="bi bi-eye" id="toggleIcon"></i>
+                        </span>
+                    </div>
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger p-2 small mb-4">
+                        <i class="bi bi-exclamation-circle me-1"></i> @ViewBag.Error
+                    </div>
+                }
+
+                <button type="submit" class="btn btn-login">
+                    Login to Portal
+                </button>
+            </form>
+        </div>
+
+        <div class="bg-light p-3 text-center border-top">
+            <small class="text-muted">© 2026 BVICAM Integrated ERP</small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function setRole(roleId, element) {
+            document.getElementById('userRole').value = roleId;
+            let btns = document.querySelectorAll('.role-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function togglePassword() {
+            const passwordField = document.getElementById('passwordField');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                passwordField.type = "password";
+                toggleIcon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        }
+    </script>
+}

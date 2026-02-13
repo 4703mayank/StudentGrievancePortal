@@ -1,0 +1,185 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+    :root {
+        --primary-blue: #0b3c6f;
+        --soft-bg: #f8fafc;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+    }
+
+    body {
+        background-color: white;
+    }
+
+    .hero-section {
+        padding: 80px 0 60px;
+        background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
+    }
+
+    .hero-tag {
+        display: inline-block;
+        padding: 6px 16px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--primary-blue);
+        margin-bottom: 24px;
+    }
+
+    .stats-strip {
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 30px 0;
+        margin-bottom: 60px;
+    }
+
+    .stat-box h4 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--primary-blue);
+        margin-bottom: 2px;
+    }
+
+    .stat-box p {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        color: var(--text-muted);
+        margin-bottom: 0;
+    }
+
+    .features-wrapper {
+        background-color: var(--soft-bg);
+        padding: 80px 0;
+        border-radius: 40px 40px 0 0;
+    }
+
+    .feature-card {
+        background: white;
+        border: 1px solid #edf2f7;
+        border-radius: 20px;
+        padding: 35px;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary-blue);
+        }
+
+    .icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #eff6ff;
+        color: var(--primary-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .btn-main {
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-weight: 700;
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        transition: 0.2s;
+    }
+
+        .btn-main:hover {
+            background-color: #082f55;
+            box-shadow: 0 10px 15px -3px rgba(11, 60, 111, 0.3);
+            color: white;
+        }
+</style>
+
+<div class="hero-section">
+    <div class="container text-center">
+        <span class="hero-tag shadow-sm">BVICAM Grievance Redressal System</span>
+        <h1 class="display-4 fw-bold text-dark mb-3">Transparency in every <span class="text-primary">resolution.</span></h1>
+        <p class="text-muted mx-auto mb-4" style="max-width: 600px;">
+            A transparent, secure, and ERP-integrated platform for BVICAM students
+            to submit grievances and track resolutions efficiently.
+        </p>
+        <a asp-controller="Account" asp-action="Login" class="btn btn-main">
+            Get Started <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+    </div>
+</div>
+
+<div class="stats-strip">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-6 col-md-3">
+                <div class="stat-box">
+                    <h4>24/7</h4>
+                    <p>Support</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-box">
+                    <h4>100%</h4>
+                    <p>Secure</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-box">
+                    <h4>Anonymous</h4>
+                    <p>Grievance Handling</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-box">
+                    <h4>Status</h4>
+                    <p>Tracking</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="features-wrapper">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card shadow-sm">
+                    <div class="icon-circle">
+                        <i class="bi bi-fingerprint"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Identity Privacy</h5>
+                    <p class="text-muted small mb-0">Student details are strictly confidential, ensuring a safe and unbiased redressal environment.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card shadow-sm">
+                    <div class="icon-circle">
+                        <i class="bi bi-lightning-charge"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Instant Updates</h5>
+                    <p class="text-muted small mb-0">Track your grievance status live. Receive notifications as soon as a resolution is posted.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card shadow-sm">
+                    <div class="icon-circle">
+                        <i class="bi bi-hdd-network"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Native Integration</h5>
+                    <p class="text-muted small mb-0">Fully integrated with BVICAM ERP for seamless authentication and department routing.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

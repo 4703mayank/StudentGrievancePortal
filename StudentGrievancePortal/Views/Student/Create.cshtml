@@ -1,0 +1,183 @@
+﻿@model StudentGrievancePortal.Models.Grievance
+
+@{
+    ViewData["Title"] = "Submit Grievance";
+}
+
+<style>
+    :root {
+        --bvicam-blue: #0b3c6f;
+        --bg-body: #f4f7fb;
+    }
+
+    .create-card {
+        border: none;
+        border-radius: 24px;
+        background: white;
+        overflow: hidden;
+    }
+
+    .header-gradient {
+        background: linear-gradient(135deg, #0b3c6f 0%, #1f6fb2 100%);
+        padding: 40px;
+        text-align: center;
+        color: white;
+    }
+
+    .header-circle {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        backdrop-filter: blur(5px);
+    }
+
+    .form-section {
+        padding: 40px;
+    }
+
+    .form-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .modern-input {
+        border-radius: 12px !important;
+        border: 1.5px solid #e2e8f0;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+        background-color: #f8fafc;
+    }
+
+        .modern-input:focus {
+            background-color: white;
+            border-color: var(--bvicam-blue);
+            box-shadow: 0 0 0 4px rgba(11, 60, 111, 0.1);
+        }
+
+    .priority-select {
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-submit {
+        border-radius: 30px;
+        padding: 12px 30px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: 0.3s;
+    }
+
+    .btn-back {
+        border-radius: 30px;
+        padding: 12px 25px;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .btn-back:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="create-card shadow-lg">
+
+                <div class="header-gradient">
+                    <div class="header-circle">
+                        <i class="bi bi-pencil-square fs-3"></i>
+                    </div>
+
+                    <div>
+                        <h2 class="fw-bold mb-1">New Grievance</h2>
+                        <p class="opacity-75 mb-0">
+                            Please fill in the details below. We're here to help.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <form asp-action="Create">
+                        <div class="row g-4">
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold"><i class="bi bi-building me-1"></i> Target Department</label>
+                                <select asp-for="AssignedDeptId" class="form-select modern-input" asp-items="ViewBag.Departments" required>
+                                    <option value="">Choose department...</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold"><i class="bi bi-flag me-1"></i> Priority Level</label>
+                                <select asp-for="Priority" class="form-select modern-input priority-select" id="prioritySelector">
+                                    <option value="Low">Low (General Inquiry)</option>
+                                    <option value="Medium" selected>Medium (Standard Grievance)</option>
+                                    <option value="High">High (Urgent Action)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold"><i class="bi bi-type-h1 me-1"></i> Subject</label>
+                                <input asp-for="Subject" class="form-control modern-input" placeholder="Enter a concise title..." required />
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold"><i class="bi bi-text-paragraph me-1"></i> Detailed Description</label>
+                                <textarea asp-for="Description" class="form-control modern-input" rows="6"
+                                          placeholder="Explain the issue in detail. Include dates, locations, or names if applicable..." required></textarea>
+                            </div>
+
+                            <div class="col-12 mt-5">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a asp-action="Index" class="btn-back">
+                                        <i class="bi bi-arrow-left me-2"></i> Discard & Return
+                                    </a>
+                                    <button type="submit" class="btn btn-primary btn-submit shadow">
+                                        Submit Grievance <i class="bi bi-send ms-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Your grievance will be assigned a unique <strong>Ticket ID</strong> upon submission.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const selector = document.getElementById('prioritySelector');
+
+        function updateStyles() {
+            const val = selector.value;
+            selector.style.color = val === 'High' ? '#dc3545' : (val === 'Medium' ? '#fd7e14' : '#0d6efd');
+        }
+
+        selector.addEventListener('change', updateStyles);
+        updateStyles(); 
+    </script>
+}

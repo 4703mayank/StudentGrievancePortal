@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# SQL Server Management Studio Version 22
+VisualStudioVersion = 18.1.11304.174 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentGrievancePortal", "StudentGrievancePortal\StudentGrievancePortal.csproj", "{149C2A01-E6EF-423A-9ECD-839677704D6A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Default|Any CPU = Default|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{149C2A01-E6EF-423A-9ECD-839677704D6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{149C2A01-E6EF-423A-9ECD-839677704D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{149C2A01-E6EF-423A-9ECD-839677704D6A}.Default|Any CPU.ActiveCfg = Release|Any CPU
+		{149C2A01-E6EF-423A-9ECD-839677704D6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{149C2A01-E6EF-423A-9ECD-839677704D6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{016C5A0A-70AC-458C-94F2-1C0F6450B222}.Debug|Any CPU.ActiveCfg = Default
+		{016C5A0A-70AC-458C-94F2-1C0F6450B222}.Default|Any CPU.ActiveCfg = Default
+		{016C5A0A-70AC-458C-94F2-1C0F6450B222}.Release|Any CPU.ActiveCfg = Default
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {587BA1F8-4236-4DD7-9E50-97667CF35C8B}
+	EndGlobalSection
+EndGlobal

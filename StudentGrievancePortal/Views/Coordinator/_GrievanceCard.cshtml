@@ -1,0 +1,53 @@
+﻿@model StudentGrievancePortal.Models.Grievance
+
+@{
+    var isHigh = Model.Priority == "High";
+    var isMedium = Model.Priority == "Medium";
+    var priorityColor = isHigh ? "danger" : (isMedium ? "warning" : "info");
+    var borderClass = isHigh ? "border-danger" : (isMedium ? "border-warning" : "border-info");
+    var statusClass = Model.Status == "Resolved" ? "bg-success" : "bg-warning text-dark";
+
+    var timeSpan = DateTime.UtcNow - Model.CreatedAt;
+    var isDelayed = Model.Status != "Resolved" && timeSpan.TotalHours > 48;
+}
+
+<div class="col-md-6 mb-4 grievance-card" data-priority="@Model.Priority">
+    <div class="card h-100 border-start border-4 @borderClass shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center bg-white border-0 pt-3">
+            <span class="badge bg-dark ticket-label">Ticket: @Model.TicketNumber</span>
+            <div class="d-flex align-items-center gap-2">
+                @if (isDelayed)
+                {
+                    <span class="badge rounded-pill bg-danger pulsate-danger">
+                        <i class="bi bi-clock-history"></i> DELAYED (@Math.Floor(timeSpan.TotalDays)d)
+                    </span>
+                }
+                <span class="badge bg-@priorityColor @(!isHigh ? "text-dark" : "")">@Model.Priority</span>
+                <span class="badge @statusClass">@Model.Status</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <h5 class="card-title fw-bold text-primary subject-label">@Model.Subject</h5>
+            <p class="card-text text-dark small">@Model.Description</p>
+            <div class="mt-2 mb-3">
+                <small class="text-muted"><i class="bi bi-calendar-event"></i> @Model.CreatedAt.ToString("g")</small>
+            </div>
+            <hr class="opacity-25" />
+
+            @if (Model.Status != "Resolved")
+            {
+                <button type="button" class="btn btn-primary btn-sm w-100 shadow-sm"
+                        onclick="prepareResolveModal('@Model.GrievanceId', '@Model.TicketNumber')">
+                    <i class="bi bi-check2-circle"></i> Mark as Resolved
+                </button>
+            }
+            else
+            {
+                <div class="p-2 bg-success-subtle rounded border border-success border-opacity-25 mt-1">
+                    <p class="small mb-0 text-dark"><strong>Resolution:</strong> @Model.ResolutionDetails</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

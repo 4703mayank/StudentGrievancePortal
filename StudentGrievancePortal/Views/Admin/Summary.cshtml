@@ -1,0 +1,253 @@
+﻿@using System.Text.Encodings.Web
+@{
+    ViewData["Title"] = "BVICAM Summary";
+}
+
+<style>
+    @@media print {
+        .no-print, .navbar, .btn-group, .card-header, .stats-card, .list-group, #statusChart {
+            display: none !important;
+        }
+
+        .container {
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+        }
+
+        .table-responsive {
+            overflow: visible !important;
+            max-height: none !important;
+        }
+
+        body::before {
+            content: "BVICAM Official Grievance Report";
+            display: block;
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+    }
+
+    .stats-icon {
+        font-size: 2.2rem;
+        opacity: 0.25;
+    }
+
+    .priority-item {
+        transition: 0.2s;
+        cursor: pointer;
+        border-left: 4px solid transparent;
+    }
+
+        .priority-item:hover {
+            background-color: #f8f9fa;
+        }
+
+    .active-priority {
+        background-color: #0d6efd !important;
+        color: white !important;
+        border-left: 4px solid #004085 !important;
+    }
+
+        .active-priority .badge {
+            background-color: white !important;
+            color: #0d6efd !important;
+        }
+
+    .sticky-top {
+        z-index: 1020;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <h2 class="text-dark fw-bold mb-0">
+            <i class="bi bi-graph-up-arrow text-primary"></i> BVICAM Summary Report
+        </h2>
+        <div class="btn-group shadow-sm">
+            <a asp-action="ExportToCSV" class="btn btn-outline-success"><i class="bi bi-file-earmark-spreadsheet"></i> CSV Report</a>
+            <button onclick="window.print()" class="btn btn-outline-dark"><i class="bi bi-printer"></i> Print Table</button>
+        </div>
+    </div>
+
+    <div class="row mb-4 g-3 no-print">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-primary text-white h-100 stats-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><h6 class="small text-uppercase opacity-75">Total</h6><h3 class="fw-bold mb-0">@ViewBag.Total</h3></div>
+                    <i class="bi bi-files stats-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-success text-white h-100 stats-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><h6 class="small text-uppercase opacity-75">Resolved</h6><h3 class="fw-bold mb-0">@ViewBag.Resolved</h3></div>
+                    <i class="bi bi-check-circle-fill stats-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-warning text-dark h-100 stats-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><h6 class="small text-uppercase opacity-75">Pending</h6><h3 class="fw-bold mb-0">@ViewBag.Pending</h3></div>
+                    <i class="bi bi-clock-history stats-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-dark text-white h-100 stats-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><h6 class="small text-uppercase opacity-75">Avg. Resolution</h6><h3 class="fw-bold mb-0">@ViewBag.AvgSLA Days</h3></div>
+                    <i class="bi bi-lightning-charge-fill stats-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4 no-print">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-primary">Priority Breakdown</h6>
+                    <button class="btn btn-sm btn-link p-0 text-decoration-none" onclick="setPriorityFilter('', null)">Clear</button>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush" id="priorityList">
+                        <li class="list-group-item d-flex justify-content-between align-items-center priority-item" onclick="setPriorityFilter('High', this)">
+                            High <span class="badge bg-danger rounded-pill">@ViewBag.High</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center priority-item" onclick="setPriorityFilter('Medium', this)">
+                            Medium <span class="badge bg-warning text-dark rounded-pill">@ViewBag.Medium</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center priority-item" onclick="setPriorityFilter('Low', this)">
+                            Low <span class="badge bg-info text-dark rounded-pill">@ViewBag.Low</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card shadow-sm border-0 py-3">
+                <div class="card-body text-center">
+                    <canvas id="statusChart" style="max-width: 200px; margin: auto;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 no-print">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-3">
+                            <input type="text" id="summarySearch" class="form-control form-control-sm" placeholder="Ticket/Subject..." onkeyup="filterSummaryTable()">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="date" id="startDate" class="form-control form-control-sm" onchange="filterSummaryTable()">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="date" id="endDate" class="form-control form-control-sm" onchange="filterSummaryTable()">
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <button class="btn btn-sm btn-outline-secondary w-100" onclick="resetAllFilters()">
+                                <i class="bi bi-arrow-clockwise"></i> Reset All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0" id="summaryTable">
+                            <thead class="bg-light sticky-top">
+                                <tr class="small text-uppercase text-muted">
+                                    <th class="ps-3">Ticket</th>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in ViewBag.Recent)
+                                {
+                                    <tr class="summary-row" data-priority="@item.Priority">
+                                        <td class="ps-3 fw-bold text-primary">@item.TicketNumber</td>
+                                        <td class="text-truncate" style="max-width: 200px;">@item.Subject</td>
+                                        <td>
+                                            <span class="badge @(item.Status == "Resolved" ? "bg-success" : "bg-warning text-dark")">@item.Status</span>
+                                        </td>
+                                        <td class="date-cell">@item.CreatedAt.ToString("yyyy-MM-dd")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="summaryNoResults" class="text-center py-5 d-none">
+                        <i class="bi bi-search text-muted fs-1"></i>
+                        <p class="text-muted mt-2">No records match your current filters.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let selectedPriority = "";
+
+        new Chart(document.getElementById('statusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Resolved', 'Pending'],
+                datasets: [{ data: [@ViewBag.Resolved, @ViewBag.Pending], backgroundColor: ['#198754', '#ffc107'], borderWidth: 0 }]
+            },
+            options: { cutout: '80%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+        });
+
+        function setPriorityFilter(priority, element) {
+            selectedPriority = priority;
+            document.querySelectorAll('.priority-item').forEach(item => item.classList.remove('active-priority'));
+            if (element) element.classList.add('active-priority');
+            filterSummaryTable();
+        }
+
+        function filterSummaryTable() {
+            const search = document.getElementById('summarySearch').value.toLowerCase();
+            const startStr = document.getElementById('startDate').value;
+            const endStr = document.getElementById('endDate').value;
+            const rows = document.getElementsByClassName('summary-row');
+
+            const start = startStr ? new Date(startStr) : null;
+            const end = endStr ? new Date(endStr) : null;
+            if (end) end.setHours(23, 59, 59, 999);
+
+            let visibleCount = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const rowPriority = rows[i].getAttribute('data-priority');
+                const rowTicket = rows[i].cells[0].innerText.toLowerCase();
+                const rowSubject = rows[i].cells[1].innerText.toLowerCase();
+                const rowDate = new Date(rows[i].querySelector('.date-cell').innerText);
+
+                let matches = true;
+
+                if (selectedPriority && rowPriority !== selectedPriority) matches = false;
+                if (start && rowDate < start) matches = false;
+                if (end && rowDate > end) matches = false;
+                if (search && !rowTicket.includes(search) && !rowSubject.includes(search)) matches = false;
+
+                rows[i].style.display = matches ? "" : "none";
+                if (matches) visibleCount++;
+            }
+            document.getElementById('summaryNoResults').classList.toggle('d-none', visibleCount > 0);
+            document.getElementById('summaryTable').classList.toggle('d-none', visibleCount === 0);
+        }
+
+        function resetAllFilters() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('summarySearch').value = '';
+            setPriorityFilter('', null);
+        }
+    </script>
+}

@@ -1,0 +1,258 @@
+﻿@model IEnumerable<StudentGrievancePortal.Models.Grievance>
+
+@{
+    ViewData["Title"] = "Coordinator Dashboard";
+
+    var pendingCases = Model.Where(g => g.Status != "Resolved").ToList();
+    var resolvedCases = Model.Where(g => g.Status == "Resolved").ToList();
+
+    var totalCount = Model.Count();
+    var highCount = Model.Count(g => g.Priority == "High");
+    var mediumCount = Model.Count(g => g.Priority == "Medium");
+    var lowCount = Model.Count(g => g.Priority == "Low");
+}
+
+<style>
+    .pulsate-danger {
+        animation: pulse-red 2s infinite;
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+
+    @@keyframes pulse-red {
+        0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+        }
+
+        70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+        }
+
+        100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+        }
+    }
+
+    .sla-warning-text {
+        font-size: 0.7rem;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        padding: 5px 10px;
+    }
+
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        border: none;
+        padding: 12px 20px;
+        font-weight: 500;
+    }
+
+        .nav-tabs .nav-link.active {
+            color: #0d6efd !important;
+            font-weight: bold;
+            border-bottom: 3px solid #0d6efd !important;
+            background: transparent;
+        }
+
+    body.modal-open {
+        padding-right: 0 !important;
+    }
+
+    .modal-dialog-centered {
+        min-height: calc(100% - 3.5rem);
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row align-items-center border-bottom mb-4 pb-3">
+        <div class="col-lg-6">
+            <h2 class="text-secondary"><i class="bi bi-clipboard-check"></i> Coordinator Dashboard</h2>
+            <p class="text-muted mb-0">Reviewing grievances for <strong>@Context.Session.GetString("UserName")</strong></p>
+        </div>
+
+        <div class="col-lg-6 mt-3 mt-lg-0">
+            <div class="d-flex gap-2 justify-content-lg-end">
+                <div class="input-group shadow-sm" style="max-width: 250px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" id="dashboardSearch" class="form-control" placeholder="Ticket # or Subject..." onkeyup="filterDashboard()">
+                </div>
+                <div class="input-group shadow-sm" style="max-width: 250px;">
+                    <label class="input-group-text bg-white"><i class="bi bi-filter"></i></label>
+                    <select id="ccPriorityFilter" class="form-select" onchange="filterDashboard()">
+                        <option value="">All Priorities (@totalCount)</option>
+                        <option value="High">High (@highCount)</option>
+                        <option value="Medium">Medium (@mediumCount)</option>
+                        <option value="Low">Low (@lowCount)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-4 border-0" id="grievanceTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pendingPane" type="button" role="tab">
+                <i class="bi bi-hourglass-split"></i> Pending Cases (@pendingCases.Count)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="resolved-tab" data-bs-toggle="tab" data-bs-target="#resolvedPane" type="button" role="tab">
+                <i class="bi bi-check-all"></i> Resolved History (@resolvedCases.Count)
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="grievanceTabsContent">
+        <div class="tab-pane fade show active" id="pendingPane" role="tabpanel">
+            <div class="row tab-grid" id="pendingGrid">
+                @if (!pendingCases.Any())
+                {
+                    <div class="text-center mt-5 py-5 border rounded bg-light no-data-msg w-100">
+                        <i class="bi bi-emoji-smile text-success" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">All caught up! No pending grievances.</p>
+                    </div>
+                }
+                @foreach (var item in pendingCases)
+                {
+                    <partial name="_GrievanceCard" model="item" />
+                }
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="resolvedPane" role="tabpanel">
+            <div class="row tab-grid" id="resolvedGrid">
+                @if (!resolvedCases.Any())
+                {
+                    <div class="text-center mt-5 py-5 border rounded bg-light no-data-msg w-100">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">No resolved records found.</p>
+                    </div>
+                }
+                @foreach (var item in resolvedCases)
+                {
+                    <partial name="_GrievanceCard" model="item" />
+                }
+            </div>
+        </div>
+    </div>
+
+    <div id="ccNoResults" class="text-center mt-5 d-none">
+        <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-2">No matches found in this section.</p>
+    </div>
+</div>
+
+<div class="modal fade" id="globalResolveModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <form asp-action="Resolve" method="post" id="resolveForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="modalGrievanceId" />
+
+                <div class="modal-header bg-light border-0">
+                    <h5 class="modal-title fw-bold text-primary">Resolve Ticket #<span id="displayTicketNum"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeX"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <p class="text-muted small">Please record the final resolution details below.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Resolution Action Taken</label>
+                        <textarea name="resolutionDetails" id="resDetailsText" class="form-control border-secondary-subtle" rows="4" placeholder="Detail the steps taken to solve this issue..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" id="cancelBtn">Discard</button>
+                    <button type="submit" class="btn btn-success btn-sm px-4 shadow-sm" id="confirmBtn">
+                        <span id="btnText">Confirm Resolution</span>
+                        <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 3000;">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function prepareResolveModal(id, ticketNum) {
+            document.getElementById('modalGrievanceId').value = id;
+            document.getElementById('displayTicketNum').innerText = ticketNum;
+            document.getElementById('resDetailsText').value = "";
+
+            const btn = document.getElementById('confirmBtn');
+            const spinner = document.getElementById('btnSpinner');
+            const text = document.getElementById('btnText');
+            btn.disabled = false;
+            text.innerText = "Confirm Resolution";
+            spinner.classList.add('d-none');
+
+            var myModal = new bootstrap.Modal(document.getElementById('globalResolveModal'));
+            myModal.show();
+        }
+
+        document.getElementById('resolveForm').onsubmit = function() {
+            const btn = document.getElementById('confirmBtn');
+            const spinner = document.getElementById('btnSpinner');
+            const text = document.getElementById('btnText');
+
+            btn.disabled = true;
+            text.innerText = "Saving... ";
+            spinner.classList.remove('d-none');
+        };
+
+        function filterDashboard() {
+            const priorityValue = document.getElementById('ccPriorityFilter').value;
+            const searchValue = document.getElementById('dashboardSearch').value.toLowerCase();
+            const activeTabPane = document.querySelector('.tab-pane.active');
+            const cards = activeTabPane.getElementsByClassName('grievance-card');
+
+            let visibleCount = 0;
+            for (let i = 0; i < cards.length; i++) {
+                const cardPriority = cards[i].getAttribute('data-priority');
+                const ticketText = cards[i].querySelector('.ticket-label').innerText.toLowerCase();
+                const subjectText = cards[i].querySelector('.subject-label').innerText.toLowerCase();
+
+                const matchesPriority = (priorityValue === "" || cardPriority === priorityValue);
+                const matchesSearch = (searchValue === "" || ticketText.includes(searchValue) || subjectText.includes(searchValue));
+
+                if (matchesPriority && matchesSearch) {
+                    cards[i].style.display = "";
+                    visibleCount++;
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+
+            const noResultsGlobal = document.getElementById('ccNoResults');
+            noResultsGlobal.classList.toggle('d-none', (cards.length === 0 || visibleCount > 0));
+        }
+
+        document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tabEl => {
+            tabEl.addEventListener('shown.bs.tab', filterDashboard);
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var message = "@TempData["SuccessMessage"]";
+            if (message && message.trim() !== "") {
+                var toastEl = document.getElementById('successToast');
+                var toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+                toast.show();
+            }
+        });
+    </script>
+}

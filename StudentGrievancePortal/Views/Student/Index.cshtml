@@ -1,0 +1,385 @@
+﻿@model IEnumerable<StudentGrievancePortal.Models.Grievance>
+@using System.Text.Encodings.Web
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Student Dashboard";
+    var total = Model.Count();
+    var resolved = Model.Count(x => x.Status == "Resolved");
+    var pending = Model.Count(x => x.Status != "Resolved");
+    var studentName = HttpContextAccessor.HttpContext.Session.GetString("UserName") ?? "Student";
+}
+
+<style>
+    :root {
+        --bvicam-blue: #0b3c6f;
+        --bg-body: #f4f7fb;
+        --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+        background-color: var(--bg-body);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    .unified-height {
+        height: 48px !important;
+        display: flex;
+        align-items: center;
+    }
+
+    .pulse-dot {
+        height: 10px;
+        width: 10px;
+        background-color: #ef5350;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse-ring 2s infinite;
+    }
+
+    @@keyframes pulse-ring {
+        0% {
+            box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(239, 83, 80, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(239, 83, 80, 0);
+        }
+    }
+
+    .circle-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .grievance-row {
+        background: white;
+        border-radius: 16px;
+        margin-bottom: 12px;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+        .grievance-row:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+            border-color: #e2e8f0;
+        }
+
+    .btn-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+        border: 1.5px solid #e2e8f0;
+        color: var(--bvicam-blue);
+        background: transparent;
+    }
+
+        .btn-circle:hover {
+            background-color: var(--bvicam-blue);
+            color: white !important;
+            border-color: var(--bvicam-blue);
+        }
+
+    .search-container {
+        background: white;
+        border-radius: 30px;
+        padding: 0 15px;
+        border: 1px solid #e2e8f0;
+        width: 100%;
+        position: relative;
+    }
+
+    .search-input {
+        border: none;
+        outline: none;
+        background: transparent;
+        padding: 0 10px;
+        width: 100%;
+        height: 100%;
+    }
+
+    .clear-filters-btn {
+        background: #f1f5f9;
+        border: none;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        display: none;
+        white-space: nowrap;
+        transition: 0.2s;
+        margin-left: 10px;
+    }
+
+        .clear-filters-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+    .custom-select-pill {
+        border-radius: 30px !important;
+        border: 1px solid #e2e8f0 !important;
+        background-color: white !important;
+        padding: 0 20px !important;
+    }
+
+    .status-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+</style>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+    <div id="successToast" class="toast border-0 shadow-lg rounded-4" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white rounded-top-4">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong class="me-auto">Submission Successful</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-white rounded-bottom-4 py-3">
+            @TempData["SuccessMessage"]
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+
+    <div class="row align-items-center mb-5">
+        <div class="col-md-7">
+            <h1 class="fw-bold text-dark mb-1">Hello, @studentName!</h1>
+            <p class="text-muted">Manage your grievances and track progress.</p>
+        </div>
+        <div class="col-md-5 text-md-end mt-3 mt-md-0">
+            <a asp-action="Create" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-bold">
+                <i class="bi bi-plus-lg me-1"></i> New Submission
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-5 g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body d-flex align-items-center p-4">
+                    <div class="circle-icon bg-primary bg-opacity-10 text-primary me-3">
+                        <i class="bi bi-ticket-perforated fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem;">Total</small>
+                        <h2 class="fw-bold mb-0">@total</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body d-flex align-items-center p-4">
+                    <div class="circle-icon bg-warning bg-opacity-10 text-warning me-3">
+                        <i class="bi bi-clock-history fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem;">Pending</small>
+                        <h2 class="fw-bold mb-0">@pending</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body d-flex align-items-center p-4">
+                    <div class="circle-icon bg-success bg-opacity-10 text-success me-3">
+                        <i class="bi bi-check2-circle fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem;">Resolved</small>
+                        <h2 class="fw-bold mb-0">@resolved</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4 align-items-center">
+        <div class="col-md-8">
+            <div class="search-container shadow-sm unified-height">
+                <i class="bi bi-search text-muted"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by ticket # or subject..." onkeyup="filterTable()">
+                <button id="clearFiltersBtn" class="clear-filters-btn" onclick="clearAllFilters()">
+                    <i class="bi bi-x-lg me-1"></i> Clear
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select id="statusFilter" class="form-select custom-select-pill shadow-sm unified-height" onchange="filterTable()">
+                <option value="">Status: All</option>
+                <option value="Submitted">Submitted</option>
+                <option value="Under Review">Under Review</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="grievanceFeed" class="pb-5">
+        <div class="d-none d-md-flex px-4 pb-2 text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">
+            <div style="width: 20%;">Ticket ID</div>
+            <div style="width: 40%;">Subject Detail</div>
+            <div style="width: 15%;">Status</div>
+            <div style="width: 15%;">Date</div>
+            <div style="width: 10%;" class="text-center">View</div>
+        </div>
+
+        @foreach (var item in Model)
+        {
+            bool isNew = item.Status == "Resolved" && (DateTime.Now - item.UpdatedAt).TotalHours < 24;
+
+            <div class="grievance-row px-4 py-3 d-flex align-items-center flex-wrap flex-md-nowrap shadow-sm">
+                <div style="width: 20%;" class="fw-bold text-dark ticket-id">
+                    @if (isNew)
+                    {
+                        <span class="pulse-dot me-2"></span>
+                    }
+                    #@item.TicketNumber
+                </div>
+                <div style="width: 40%;" class="subject-text">
+                    <div class="fw-semibold text-dark">@item.Subject</div>
+                    @if (isNew)
+                    {
+                        <span class="text-danger fw-bold" style="font-size: 0.65rem;">NEW ACTION</span>
+                    }
+                </div>
+                <div style="width: 15%;">
+                    @{
+                        var sColor = item.Status == "Resolved" ? "bg-success" : (item.Status == "Under Review" ? "bg-warning text-dark" : "bg-primary");
+                    }
+                    <span class="status-badge @sColor status-badge-text">@item.Status</span>
+                </div>
+                <div style="width: 15%;" class="text-muted small">
+                    @item.CreatedAt.ToString("dd MMM yyyy")
+                </div>
+                <div style="width: 10%;" class="text-center">
+                    <button class="btn btn-circle"
+                            onclick="openModal('@item.Subject', '@JavaScriptEncoder.Default.Encode(item.Description)', '@JavaScriptEncoder.Default.Encode(item.ResolutionDetails ?? "Our team is currently reviewing your grievance.")')">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div id="noResults" class="text-center py-5 d-none">
+        <div class="mb-3">
+            <i class="bi bi-filter-circle text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h4 class="text-dark fw-bold">No results found</h4>
+        <p class="text-muted">Adjust your filters or try a different search term.</p>
+    </div>
+</div>
+
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-0 bg-light rounded-top-4 p-4">
+                <h5 class="modal-title fw-bold" id="mTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-4">
+                    <label class="small text-muted fw-bold text-uppercase mb-2 d-block">Grievance Description</label>
+                    <p id="mDesc" class="p-3 bg-light rounded-3 border small mb-0" style="white-space: pre-wrap;"></p>
+                </div>
+                <div>
+                    <label class="small text-muted fw-bold text-uppercase mb-2 d-block">Resolution Response</label>
+                    <div id="mRes" class="p-3 bg-success bg-opacity-10 text-success rounded-3 border border-success border-opacity-25 small"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <text>
+                    var toastEl = document.getElementById('successToast');
+                    var toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+                    toast.show();
+                    </text>
+            }
+        });
+
+        function filterTable() {
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const clearBtn = document.getElementById('clearFiltersBtn');
+
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const selectedStatus = statusFilter.value.toLowerCase();
+            const rows = document.querySelectorAll('.grievance-row');
+
+            clearBtn.style.display = (searchTerm !== "" || selectedStatus !== "") ? "block" : "none";
+
+            let visibleCount = 0;
+            rows.forEach(row => {
+                const ticketId = row.querySelector('.ticket-id').innerText.toLowerCase();
+                const subject = row.querySelector('.subject-text').innerText.toLowerCase();
+                const currentStatus = row.querySelector('.status-badge-text').innerText.toLowerCase();
+
+                const matchesSearch = searchTerm === "" || ticketId.includes(searchTerm) || subject.includes(searchTerm);
+                const matchesStatus = selectedStatus === "" || currentStatus === selectedStatus;
+
+                if (matchesSearch && matchesStatus) {
+                    row.style.setProperty('display', 'flex', 'important');
+                    visibleCount++;
+                } else {
+                    row.style.setProperty('display', 'none', 'important');
+                }
+            });
+
+            const noResultsDiv = document.getElementById('noResults');
+            const feedHeader = document.querySelector('#grievanceFeed .d-md-flex');
+
+            if (visibleCount === 0) {
+                noResultsDiv.classList.remove('d-none');
+                if(feedHeader) feedHeader.classList.add('d-none');
+            } else {
+                noResultsDiv.classList.add('d-none');
+                if(feedHeader) feedHeader.classList.remove('d-none');
+            }
+        }
+
+        function clearAllFilters() {
+            document.getElementById('searchInput').value = "";
+            document.getElementById('statusFilter').value = "";
+            filterTable();
+        }
+
+        function openModal(t, d, r) {
+            document.getElementById('mTitle').innerText = t;
+            document.getElementById('mDesc').innerText = d;
+            document.getElementById('mRes').innerText = r;
+            new bootstrap.Modal(document.getElementById('detailModal')).show();
+        }
+    </script>
+}
