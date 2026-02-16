@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using StudentGrievancePortal.Models;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using System;
+using System.Globalization;
 
 namespace StudentGrievancePortal.Controllers
 {
@@ -15,7 +17,6 @@ namespace StudentGrievancePortal.Controllers
             _context = context;
         }
 
-        // Action to list student's own grievances
         public IActionResult Index()
         {
             var studentId = HttpContext.Session.GetInt32("UserId");
@@ -26,16 +27,48 @@ namespace StudentGrievancePortal.Controllers
                 .OrderByDescending(g => g.CreatedAt)
                 .ToList();
 
+            var lastSeenUtc = DateTime.MinValue;
+            var lastSeenStr = HttpContext.Session.GetString("StudentDashboardLastSeen");
+            if (!string.IsNullOrEmpty(lastSeenStr) && DateTime.TryParse(lastSeenStr, null, DateTimeStyles.RoundtripKind, out var parsed))
+            {
+                lastSeenUtc = parsed.ToUniversalTime();
+            }
+
+            var newlyResolved = myGrievances
+                .Where(g => g.Status == "Resolved" && g.UpdatedAt.ToUniversalTime() > lastSeenUtc)
+                .OrderByDescending(g => g.UpdatedAt)
+                .ToList();
+
+            if (newlyResolved.Any())
+            {
+                var recent = newlyResolved.Where(g => (DateTime.UtcNow - g.UpdatedAt).TotalHours <= 12).ToList();
+                if (recent.Any())
+                {
+                    if (recent.Count == 1)
+                    {
+                        TempData["SuccessMessage"] = $"Your grievance #{recent.First().TicketNumber} has been resolved.";
+                    }
+                    else
+                    {
+                        TempData["SuccessMessage"] = $"{recent.Count} grievances were resolved. Latest: #{recent.First().TicketNumber}.";
+                    }
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = $"{newlyResolved.Count} grievances were resolved while you were away. Latest: #{newlyResolved.First().TicketNumber}.";
+                }
+            }
+
+            HttpContext.Session.SetString("StudentDashboardLastSeen", DateTime.UtcNow.ToString("o"));
+
             return View(myGrievances);
         }
 
-        // Action to show the submission form
         public IActionResult Create()
         {
             if (HttpContext.Session.GetInt32("UserId") == null)
                 return RedirectToAction("Login", "Account");
 
-            // Get departments so student can choose where to send the grievance
             ViewBag.Departments = new SelectList(_context.Departments, "DeptId", "DeptName");
             return View();
         }
@@ -55,6 +88,9 @@ namespace StudentGrievancePortal.Controllers
 
                 _context.Grievances.Add(grievance);
                 _context.SaveChanges();
+
+                TempData["SuccessMessage"] = $"Submission successful — Ticket #{grievance.TicketNumber}";
+
                 return RedirectToAction(nameof(Index));
             }
 
