@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace StudentGrievancePortal.Controllers
 {
@@ -11,11 +12,13 @@ namespace StudentGrievancePortal.Controllers
     {
         private readonly GrievanceContext _context;
         private readonly IConfiguration _config;
+        private readonly ILogger<CoordinatorController> _logger;
 
-        public CoordinatorController(GrievanceContext context, IConfiguration config)
+        public CoordinatorController(GrievanceContext context, IConfiguration config, ILogger<CoordinatorController> logger)
         {
             _context = context;
             _config = config;
+            _logger = logger;
         }
 
         public IActionResult Dashboard()
@@ -59,22 +62,26 @@ namespace StudentGrievancePortal.Controllers
                         var smtpUser = _config["EmailSettings:Username"];
                         var smtpPass = _config["EmailSettings:Password"];
                         var fromAddress = _config["EmailSettings:SenderEmail"] ?? smtpUser;
+                        var senderName = _config["EmailSettings:SenderName"] ?? fromAddress;
 
                         int smtpPort = 587;
                         if (!string.IsNullOrEmpty(smtpPortStr) && int.TryParse(smtpPortStr, out var p)) smtpPort = p;
 
                         var mail = new MailMessage();
-                        mail.From = new MailAddress(fromAddress);
+                        mail.From = new MailAddress(fromAddress, senderName);
                         mail.To.Add(studentEmail);
                         mail.Subject = $"Grievance #{grievance.TicketNumber} Resolved";
 
                         var dashboardUrl = Url.Action("Index", "Student", null, Request.Scheme);
-                        mail.Body = $"Hello {grievance.Student?.FullName},\n\nYour grievance #{grievance.TicketNumber} has been marked as resolved.\n\nResolution details:\n{resolutionDetails}\n\nYou can view your grievance here: {dashboardUrl}\n\nRegards,\nBVICAM Grievance Team";
+                        mail.Body = $"Hello {grievance.Student?.FullName},\n\nYour grievance #{grievance.TicketNumber} has been marked as resolved.\n\nResolution details:\n{resolutionDetails}\n\nYou can view your grievances here: {dashboardUrl}\n\nRegards,\n{senderName}";
                         mail.IsBodyHtml = false;
 
                         using (var client = new SmtpClient(smtpHost, smtpPort))
                         {
                             client.EnableSsl = true;
+                            client.UseDefaultCredentials = false;
+                            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                            client.Timeout = 10000;
                             if (!string.IsNullOrEmpty(smtpUser))
                             {
                                 client.Credentials = new System.Net.NetworkCredential(smtpUser, smtpPass);
@@ -83,9 +90,10 @@ namespace StudentGrievancePortal.Controllers
                         }
                     }
                 }
-                catch
+                catch (System.Exception ex)
                 {
-                    // swallow errors so coordinator flow is not impacted; consider logging
+                    // log email failures but don't break coordinator flow
+                    _logger?.LogError(ex, "Failed to send resolution email for grievance {GrievanceId}", grievance.GrievanceId);
                 }
 
                 // Optional: show a toast to the coordinator as well
