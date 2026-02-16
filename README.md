@@ -78,9 +78,17 @@ Open `appsettings.json` and ensure this exists else create:
         }
     },
     "AllowedHosts": "*",
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=SERVERNAME;Database=GrievanceERP;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
+    "EmailSettings": {
+        "SmtpServer": "smtp.gmail.com",
+        "Port": 587,
+        "SenderName": "BVICAM Grievance Portal",
+        "SenderEmail": "piyushjha.2312@gmail.com",
+        "Username": "piyushjha.2312@gmail.com",
+        "Password": "please put the password here"
+    },
+    "ConnectionStrings": {
+        "DefaultConnection": "Server=PIYUSH\\SQLEXPRESS01;Database=GrievanceERP;Trusted_Connection=True;TrustServerCertificate=True;"
+    } 
 }
 ```
 - Everyone will not have the same **server name** and rest string will be same. Replace 'SERVERNAME' with you server name in above string.
