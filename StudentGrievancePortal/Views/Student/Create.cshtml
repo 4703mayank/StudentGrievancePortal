@@ -62,9 +62,9 @@
             box-shadow: 0 0 0 4px rgba(11, 60, 111, 0.1);
         }
 
-    .priority-select {
-        cursor: pointer;
-        font-weight: 600;
+    .priority-display {
+        font-weight: 700;
+        cursor: not-allowed;
     }
 
     .btn-submit {
@@ -115,30 +115,60 @@
                         <div class="row g-4">
 
                             <div class="col-md-6">
-                                <label class="form-label fw-bold"><i class="bi bi-building me-1"></i> Target Department</label>
-                                <select asp-for="AssignedDeptId" class="form-select modern-input" asp-items="ViewBag.Departments" required>
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-building me-1"></i> Target Department
+                                </label>
+                                <select asp-for="AssignedDeptId"
+                                        id="AssignedDeptId"
+                                        class="form-select modern-input"
+                                        asp-items="ViewBag.Departments"
+                                        required>
                                     <option value="">Choose department...</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-bold"><i class="bi bi-flag me-1"></i> Priority Level</label>
-                                <select asp-for="Priority" class="form-select modern-input priority-select" id="prioritySelector">
-                                    <option value="Low">Low (General Inquiry)</option>
-                                    <option value="Medium" selected>Medium (Standard Grievance)</option>
-                                    <option value="High">High (Urgent Action)</option>
-                                </select>
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-flag me-1"></i> Priority (Auto-Assigned)
+                                </label>
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <input asp-for="Priority"
+                                           id="priorityDisplay"
+                                           type="text"
+                                           class="form-control modern-input priority-display"
+                                           value="Low"
+                                           readonly />
+
+                                    <div id="prioritySpinner"
+                                         class="spinner-border spinner-border-sm text-primary d-none"
+                                         role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label fw-bold"><i class="bi bi-type-h1 me-1"></i> Subject</label>
-                                <input asp-for="Subject" class="form-control modern-input" placeholder="Enter a concise title..." required />
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-type-h1 me-1"></i> Subject
+                                </label>
+                                <input asp-for="Subject"
+                                       id="Subject"
+                                       class="form-control modern-input"
+                                       placeholder="Enter a concise title..."
+                                       required />
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label fw-bold"><i class="bi bi-text-paragraph me-1"></i> Detailed Description</label>
-                                <textarea asp-for="Description" class="form-control modern-input" rows="6"
-                                          placeholder="Explain the issue in detail. Include dates, locations, or names if applicable..." required></textarea>
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-text-paragraph me-1"></i> Detailed Description
+                                </label>
+                                <textarea asp-for="Description"
+                                          id="Description"
+                                          class="form-control modern-input"
+                                          rows="6"
+                                          placeholder="Explain the issue in detail..."
+                                          required></textarea>
                             </div>
 
                             <div class="col-12 mt-5">
@@ -146,6 +176,7 @@
                                     <a asp-action="Index" class="btn-back">
                                         <i class="bi bi-arrow-left me-2"></i> Discard & Return
                                     </a>
+
                                     <button type="submit" class="btn btn-primary btn-submit shadow">
                                         Submit Grievance <i class="bi bi-send ms-1"></i>
                                     </button>
@@ -170,14 +201,76 @@
 
 @section Scripts {
     <script>
-        const selector = document.getElementById('prioritySelector');
+        const subjectEl = document.getElementById('Subject');
+        const descriptionEl = document.getElementById('Description');
+        const deptEl = document.getElementById('AssignedDeptId');
+        const priorityDisplay = document.getElementById('priorityDisplay');
+        const prioritySpinner = document.getElementById('prioritySpinner');
 
-        function updateStyles() {
-            const val = selector.value;
-            selector.style.color = val === 'High' ? '#dc3545' : (val === 'Medium' ? '#fd7e14' : '#0d6efd');
+        const priorityColors = {
+            'High': '#dc3545',
+            'Medium': '#FFC107',
+            'Low': '#007bff'
+        };
+
+        function updatePriorityDisplay(priority) {
+            priorityDisplay.value = priority;
+            priorityDisplay.style.color = priorityColors[priority] || '#6c757d';
+            prioritySpinner.classList.add('d-none');
         }
 
-        selector.addEventListener('change', updateStyles);
-        updateStyles(); 
+        function debounce(fn, delay) {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn(...args), delay);
+            };
+        }
+
+        async function fetchSuggestion() {
+            const subject = subjectEl?.value || '';
+            const description = descriptionEl?.value || '';
+            const deptId = deptEl?.value || null;
+
+            if (!subject && !description) return;
+
+            prioritySpinner.classList.remove('d-none');
+
+            try {
+                const response = await fetch('@Url.Action("SuggestPriority", "Student")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        subject: subject,
+                        description: description,
+                        assignedDeptId: deptId ? Number(deptId) : null
+                    })
+                });
+
+                if (!response.ok) {
+                    prioritySpinner.classList.add('d-none');
+                    return;
+                }
+
+                const data = await response.json();
+                if (data && data.priority) {
+                    updatePriorityDisplay(data.priority);
+                }
+            }
+            catch (error) {
+                console.error(error);
+                prioritySpinner.classList.add('d-none');
+            }
+        }
+
+        const debouncedFetch = debounce(fetchSuggestion, 500);
+
+        subjectEl?.addEventListener('input', debouncedFetch);
+        descriptionEl?.addEventListener('input', debouncedFetch);
+        deptEl?.addEventListener('change', debouncedFetch);
+
+        window.addEventListener('load', () => {
+            setTimeout(fetchSuggestion, 200);
+        });
     </script>
 }

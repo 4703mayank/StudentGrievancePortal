@@ -5,7 +5,8 @@
     var isMedium = Model.Priority == "Medium";
     var priorityColor = isHigh ? "danger" : (isMedium ? "warning" : "info");
     var borderClass = isHigh ? "border-danger" : (isMedium ? "border-warning" : "border-info");
-    var statusClass = Model.Status == "Resolved" ? "bg-success" : "bg-warning text-dark";
+    var statusClass = Model.Status == "Resolved" ? "bg-success" : (Model.Status == "Submitted" ? "" : "bg-warning text-dark");
+    var statusStyle = Model.Status == "Submitted" ? "background-color: #fd7e14; color: white;" : "";
 
     var timeSpan = DateTime.UtcNow - Model.CreatedAt;
     var isDelayed = Model.Status != "Resolved" && timeSpan.TotalHours > 48;
@@ -23,7 +24,7 @@
                     </span>
                 }
                 <span class="badge bg-@priorityColor @(!isHigh ? "text-dark" : "")">@Model.Priority</span>
-                <span class="badge @statusClass">@Model.Status</span>
+                <span class="badge @statusClass" style="@statusStyle">@Model.Status</span>
             </div>
         </div>
 
