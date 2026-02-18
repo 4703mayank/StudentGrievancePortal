@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StudentGrievancePortal.Models;
-using System.Linq;
-using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using StudentGrievancePortal.Data;
+using System.Linq;
+using System.Net.Mail;
 
 namespace StudentGrievancePortal.Controllers
 {
     public class CoordinatorController : Controller
     {
-        private readonly GrievanceContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
         private readonly ILogger<CoordinatorController> _logger;
 
-        public CoordinatorController(GrievanceContext context, IConfiguration config, ILogger<CoordinatorController> logger)
+        public CoordinatorController(ApplicationDbContext context, IConfiguration config, ILogger<CoordinatorController> logger)
         {
             _context = context;
             _config = config;

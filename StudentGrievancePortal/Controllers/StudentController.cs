@@ -1,18 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using StudentGrievancePortal.Data;
 using StudentGrievancePortal.Models;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 using System;
 using System.Globalization;
+using System.Linq;
 
 namespace StudentGrievancePortal.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly GrievanceContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public StudentController(GrievanceContext context)
+        public StudentController(ApplicationDbContext context)
         {
             _context = context;
         }
