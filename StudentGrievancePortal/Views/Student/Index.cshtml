@@ -166,6 +166,40 @@
             /* Transition for sliding IN (The "Pop" effect) */
             transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease-out;
         }
+
+    /* ===== SINGLE CLASS TOAST THEME ===== */
+
+    .toast {
+        background: #ffffff !important;
+        border: 2px solid #dc3545;
+        border-radius: 12px;
+        color: #000000; /* makes text black automatically */
+        box-shadow: 0 8px 22px rgba(220, 53, 69, 0.15);
+    }
+
+        /* remove Bootstrap green header */
+        .toast .toast-header {
+            background: transparent !important;
+            color: inherit !important;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        /* message area */
+        .toast .toast-body {
+            background: transparent;
+            color: inherit;
+        }
+
+        /* red tick */
+        .toast .bi-check-circle-fill {
+            color: #dc3545;
+        }
+
+        /* close button visibility on white bg */
+        .toast .btn-close {
+            filter: invert(1) grayscale(100%);
+            opacity: .7;
+        }
 </style>
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
