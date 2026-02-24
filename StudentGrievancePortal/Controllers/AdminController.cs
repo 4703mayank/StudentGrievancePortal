@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StudentGrievancePortal.Models;
+﻿    using Microsoft.AspNetCore.Mvc;
+using StudentGrievancePortal.Data;
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Http;
@@ -9,9 +9,9 @@ namespace StudentGrievancePortal.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly GrievanceContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public AdminController(GrievanceContext context)
+        public AdminController(ApplicationDbContext context)
         {
             _context = context;
         }

@@ -66,8 +66,7 @@ git pull
 ## 4. Database Setup on Your System
 
 ### 4.1 Verify connection string
-In project root folder find and 
-Open `appsettings.json` and ensure this exists else create:
+In project root folder find and Open `appsettings.json` and ensure this exists else create:
 ```json
 
 {
@@ -82,12 +81,12 @@ Open `appsettings.json` and ensure this exists else create:
         "SmtpServer": "smtp.gmail.com",
         "Port": 587,
         "SenderName": "BVICAM Grievance Portal",
-        "SenderEmail": "piyushjha.2312@gmail.com",
-        "Username": "piyushjha.2312@gmail.com",
+        "SenderEmail": "bvicamgrievances@gmail.com",
+        "Username": "bvicamgrievances@gmail.com",
         "Password": "please put the password here"
     },
     "ConnectionStrings": {
-        "DefaultConnection": "Server=PIYUSH\\SQLEXPRESS01;Database=GrievanceERP;Trusted_Connection=True;TrustServerCertificate=True;"
+        "DefaultConnection": "Server=SERVERNAME;Database=GrievanceERP;Trusted_Connection=True;TrustServerCertificate=True;"
     } 
 }
 ```
