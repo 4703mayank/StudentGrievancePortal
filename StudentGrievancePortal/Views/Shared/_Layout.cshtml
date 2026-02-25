@@ -11,39 +11,172 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+
+        :root {
+            --navy: #0d2263;
+            --red: #c8102e;
+            --red2: #a50d25;
+        }
+
+        /* ── Top utility bar ─────────────────────────── */
+        .erp-top-bar {
+            background-color: #1a1a2e;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.72rem;
+            padding: 5px 0;
+            letter-spacing: 0.02em;
+        }
+
+        /* ── Institutional header ────────────────────── */
+        .bvicam-header {
+            background: #ffffff;
+            border-bottom: 3px solid var(--red);
+            padding: 14px 0;
+        }
+
+            .bvicam-header .institute-name {
+                font-family: 'EB Garamond', Georgia, serif;
+                font-weight: 700;
+                color: var(--navy);
+                font-size: 1.55rem;
+                line-height: 1.25;
+                text-align: center;
+            }
+
+                .bvicam-header .institute-name .programs {
+                    font-size: 1.2rem;
+                    display: block;
+                    margin-top: 2px;
+                }
+
+        .bvicam-logo {
+            height: 80px;
+            width: auto;
+        }
+
+        /* ── Social icons ────────────────────────────── */
+        .social-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+            .social-btn:hover {
+                opacity: 0.82;
+                color: white;
+            }
+
+        .social-fb {
+            background: #1877f2;
+        }
+
+        .social-x {
+            background: #000;
+        }
+
+        .social-ig {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+        }
+
+        .social-yt {
+            background: #ff0000;
+        }
+
+        .social-li {
+            background: #0a66c2;
+        }
+
+        .social-wa {
+            background: #25d366;
+        }
+
+        .btn-old-site {
+            background: var(--red);
+            color: white;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+            .btn-old-site:hover {
+                background: var(--red2);
+                color: white;
+            }
+
+        /* ── Navbar ──────────────────────────────────── */
+        .bvicam-navbar {
+            background: var(--navy);
+        }
+
+            .bvicam-navbar .navbar-brand {
+                font-size: 0.85rem;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+            }
+
+            .bvicam-navbar .nav-link {
+                font-size: 0.85rem;
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                color: rgba(255,255,255,0.85) !important;
+                transition: color 0.2s;
+            }
+
+                .bvicam-navbar .nav-link:hover {
+                    color: #fff !important;
+                }
+
+        /* ── Profile dropdown ────────────────────────── */
         .profile-dropdown-toggle {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255,255,255,0.1);
             transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.15);
         }
 
             .profile-dropdown-toggle:hover {
-                background-color: rgba(255, 255, 255, 0.2) !important;
+                background-color: rgba(255,255,255,0.2) !important;
             }
 
         .profile-avatar-circle {
             width: 32px;
             height: 32px;
             background-color: white;
-            color: #0b3c6f; 
-            border-radius: 50% !important;
+            color: var(--navy);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
         .logout-icon-circle {
             width: 30px;
             height: 30px;
             background-color: #fff5f5;
-            border-radius: 50% !important;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .dropdown-menu {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
         }
 
         .animate {
@@ -58,7 +191,7 @@
             }
 
             100% {
-                transform: translateY(0rem);
+                transform: translateY(0);
                 opacity: 1;
             }
         }
@@ -67,60 +200,543 @@
             animation-name: slideIn;
         }
 
-        .dropdown-menu {
+
+        .bvicam-footer {
+            background: var(--navy);
+            color: rgba(255,255,255,0.8);
+        }
+
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 58px;
+            height: 58px;
+            background: #c8102e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(13,34,99,0.38);
+            transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), background 0.2s;
+            z-index: 1050;
+        }
+
+            #chatbot-toggle:hover {
+                transform: scale(1.2);
+                background: red;
+            }
+
+            #chatbot-toggle.cb-open {
+                background: red;
+            }
+
+            #chatbot-toggle i {
+                color: white;
+                font-size: 1.4rem;
+            }
+
+        .fab-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 18px;
+            height: 18px;
+            background: #c8102e;
+            border-radius: 50%;
+            border: 2px solid white;
+            font-size: 0.6rem;
+            color: white;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .fab-badge.hidden {
+                display: none;
+            }
+
+        /* Window */
+        #chatbot-window {
+            position: fixed;
+            bottom: 100px;
+            right: 28px;
+            width: 370px;
+            max-height: 580px;
+            background: #f4f6fb;
+            border-radius: 20px;
+            box-shadow: 0 24px 60px rgba(13,34,99,0.22), 0 4px 16px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1049;
+            transform: scale(0.85) translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transform-origin: bottom right;
+            transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), opacity 0.25s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+            #chatbot-window.cb-open {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+                pointer-events: all;
+            }
+
+        /* Header */
+        #cb-header {
+            background: #0d2263 !important;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+            #cb-header::before {
+                content: '';
+                position: absolute;
+                top: -30px;
+                right: -30px;
+                width: 120px;
+                height: 120px;
+                background: rgba(200,16,46,0.2);
+                border-radius: 50%;
+            }
+
+            #cb-header::after {
+                content: '';
+                position: absolute;
+                bottom: -40px;
+                left: 60px;
+                width: 80px;
+                height: 80px;
+                background: rgba(255,255,255,0.05);
+                border-radius: 50%;
+            }
+
+        .cb-bot-avatar {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #c8102e 0%, #ff3a5c 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(200,16,46,0.4);
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .cb-bot-info {
+            margin-left: 12px;
+            flex: 1;
+            z-index: 1;
+        }
+
+        .cb-bot-name {
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .cb-bot-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 2px;
+        }
+
+        .cb-status-dot {
+            width: 7px;
+            height: 7px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: cbPulse 2s infinite;
+        }
+
+        @@keyframes cbPulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(1.3);
+            }
+        }
+
+        .cb-status-text {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.72rem;
+            font-weight: 500;
+        }
+
+        .cb-header-actions {
+            display: flex;
+            gap: 6px;
+            z-index: 1;
+        }
+
+        .cb-hdr-btn {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.18);
+            border: 1.5px solid rgba(255,255,255,0.4);
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+            .cb-hdr-btn:hover {
+                background: grey;);
+                border-color: white;
+            }
+
+        #cb-btn-close:hover {
+            background:red;
+            border-color: white;
+        }
+
+        /* Messages */
+        #cb-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px 14px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scroll-behavior: smooth;
+        }
+
+            #cb-messages::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            #cb-messages::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            #cb-messages::-webkit-scrollbar-thumb {
+                background: #ccd3e8;
+                border-radius: 4px;
+            }
+
+        .cb-msg-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            animation: cbMsgIn 0.3s cubic-bezier(.34,1.56,.64,1) both;
+        }
+
+        @@keyframes cbMsgIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .cb-msg-row.cb-user {
+            flex-direction: row-reverse;
+        }
+
+        .cb-msg-av {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .cb-av-bot {
+            background: linear-gradient(135deg, #0d2263, #1e3a9f);
+            color: white;
+        }
+
+        .cb-av-user {
+            background: linear-gradient(135deg, #e8ecf7, #d0d8f0);
+            color: #0d2263;
+        }
+
+        .cb-bubble {
+            max-width: 78%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .cb-bot-bubble {
+            background: white;
+            color: #1a2340;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+
+        .cb-user-bubble {
+            background: #0d2263;
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(13,34,99,0.25);
+        }
+
+        .cb-time {
+            font-size: 0.65rem;
+            color: #8892aa;
+            margin-top: 3px;
+            padding: 0 4px;
+        }
+
+        .cb-msg-row.cb-user .cb-time {
+            text-align: right;
+        }
+
+        /* Chips */
+        #cb-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            padding: 4px 0 6px;
+            animation: cbMsgIn 0.35s 0.1s both;
+        }
+
+        .chatbot-chip {
+            background: white;
+            border: 1.5px solid #d4daf0;
+            color: #0d2263;
+            border-radius: 20px;
+            padding: 6px 13px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+            .chatbot-chip:hover {
+                background: #0d2263;
+                color: white;
+                border-color: #0d2263;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(13,34,99,0.2);
+            }
+
+        /* Typing */
+        .cb-typing {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 10px 14px;
+            background: white;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            width: fit-content;
+        }
+
+        .cb-typing-dot {
+            width: 7px;
+            height: 7px;
+            background: #b0bada;
+            border-radius: 50%;
+            animation: cbBounce 1.2s infinite ease-in-out;
+        }
+
+            .cb-typing-dot:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .cb-typing-dot:nth-child(3) {
+                animation-delay: 0.4s;
+            }
+
+        @@keyframes cbBounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-6px);
+            }
+        }
+
+        /* Divider */
+        .cb-divider {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.68rem;
+            color: #8892aa;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin: 4px 0;
+        }
+
+            .cb-divider::before, .cb-divider::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: #e2e6f0;
+            }
+
+        /* Input */
+        #cb-input-area {
+            background: white;
+            border-top: 1px solid #e8ecf5;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #cb-input {
+            flex: 1;
+            border: 1.5px solid #dde3f5;
             border-radius: 12px;
+            padding: 9px 14px;
+            font-size: 0.84rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1a2340;
+            background: #f4f6fb;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+            #cb-input:focus {
+                border-color: #0d2263;
+                box-shadow: 0 0 0 3px rgba(13,34,99,0.08);
+                background: white;
+            }
+
+            #cb-input::placeholder {
+                color: #aab4cc;
+            }
+
+        #cb-send {
+            width: 38px;
+            height: 38px;
+            background: #0d2263;
             border: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+            border-radius: 11px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, transform 0.15s;
+            flex-shrink: 0;
+        }
+
+            #cb-send:hover {
+                background: #163088;
+                transform: scale(1.05);
+            }
+
+            #cb-send:active {
+                transform: scale(0.95);
+            }
+
+        @@media (max-width: 420px) {
+            #chatbot-window {
+                width: calc(100vw - 24px);
+                right: 12px;
+                bottom: 90px;
+            }
+
+            #chatbot-toggle {
+                bottom: 18px;
+                right: 18px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="erp-top-bar text-white small">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <span>
-                <i class="bi bi-mortarboard-fill"></i>
-                Bharati Vidyapeeth (Deemed University)
-            </span>
-            <span class="d-none d-md-inline">
-                BVICAM | Student Grievance Redressal System
-            </span>
+    <!-- ① Top bar -->
+    <div class="erp-top-bar">
+        <div class="container-fluid d-flex justify-content-between align-items-center px-3">
+            <span><i class="bi bi-mortarboard-fill me-1"></i>Bharati Vidyapeeth (Deemed University)</span>
+            <span class="d-none d-md-inline">BVICAM | Student Grievance Redressal System</span>
         </div>
     </div>
 
-    <div class="bvicam-header py-3">
-        <div class="container-fluid d-flex align-items-center">
-            <img src="~/images/bvicam-logo.png" alt="BVICAM Logo" class="bvicam-logo me-3" />
-            <div>
-                <h5 class="fw-bold mb-0">
-                    Bharati Vidyapeeth’s Institute of Computer Applications & Management
-                </h5>
-                <div class="text-muted small">
-                    ERP Integrated Grievance Management Portal
+    <!-- ② Institutional header -->
+    <div class="bvicam-header">
+        <div class="container-fluid px-4">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <img src="~/images/bvicam-logo.png" alt="BVICAM Logo" class="bvicam-logo" />
+                </div>
+                <div class="col">
+                    <div class="institute-name">
+                        Bharati Vidyapeeth's Institute of Computer Applications and Management (BVICAM)
+                        <span class="programs">MCA &nbsp;|&nbsp; BA(JMC)</span>
+                    </div>
+                </div>
+                <div class="col-auto d-none d-lg-flex flex-column align-items-end gap-2">
+                    <div class="d-flex gap-1">
+                        <a href="https://www.facebook.com/BVICAMDelhi/" class="social-btn social-fb" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="https://x.com/BharatiNews_?t=KEQB7OcqmJ72FU73iIXCJA&s=08" class="social-btn social-x" title="X / Twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="https://www.instagram.com/ibvicam?igshid=YmMyMTA2M2Y%3D" class="social-btn social-ig" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="https://youtube.com/@@bvicamnewdelhi6802" class="social-btn social-yt" title="YouTube"><i class="bi bi-youtube"></i></a>
+                        <a href="https://www.linkedin.com/in/bvicam-new-delhi/" class="social-btn social-li" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://api.whatsapp.com/send/?phone=9205310333&text&type=phone_number&app_absent=0" class="social-btn social-wa" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="https://bvicam.ac.in" target="_blank" class="btn-old-site">Main Website</a>
+                        @{
+                            var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
+                        }
+                        @if (userId == null)
+                        {
+                            <a class="btn-old-site" asp-controller="Account" asp-action="Login">Login</a>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ③ Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bvicam-navbar shadow-sm sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center fw-bold" asp-controller="Home" asp-action="Index">
-                <img src="~/images/bvicam-logo.png" alt="BVICAM Logo" class="navbar-logo me-2" />
-                <span class="d-none d-md-inline">BVICAM GRIEVANCES</span>
+            <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                BVICAM GRIEVANCES
             </a>
-
             <button class="navbar-toggler border-0" data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     @{
-                        var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
                         var roleId = HttpContextAccessor.HttpContext.Session.GetInt32("UserRole");
                     }
-
                     @if (userId != null && roleId == 1)
                     {
                         <li class="nav-item">
@@ -134,7 +750,6 @@
                             </a>
                         </li>
                     }
-
                     @if (userId != null && roleId == 2)
                     {
                         <li class="nav-item">
@@ -149,7 +764,6 @@
                         </li>
                     }
                 </ul>
-
                 <ul class="navbar-nav ms-auto align-items-center">
                     @if (userId != null)
                     {
@@ -166,7 +780,7 @@
                             <ul class="dropdown-menu dropdown-menu-end animate slideIn mt-2 p-2">
                                 <li>
                                     <div class="dropdown-header px-3 py-2">
-                                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Authenticated As</small>
+                                        <small class="text-muted text-uppercase fw-bold" style="font-size:0.6rem;">Authenticated As</small>
                                         <div class="fw-bold text-dark">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</div>
                                     </div>
                                 </li>
@@ -184,7 +798,7 @@
                     }
                     else
                     {
-                        <li class="nav-item">
+                        <li class="nav-item d-lg-none">
                             <a class="btn btn-danger btn-sm px-4 rounded-pill fw-bold" asp-controller="Account" asp-action="Login">
                                 <i class="bi bi-box-arrow-in-right"></i> Login
                             </a>
@@ -195,72 +809,242 @@
         </div>
     </nav>
 
+    <!-- ④ Page content -->
     <main class="container my-5">
         @RenderBody()
     </main>
 
+    <!-- ⑤ Footer -->
     <footer class="bvicam-footer py-3">
         <div class="container text-center small">
-            <div class="fw-semibold">
-                © 2026 Bharati Vidyapeeth (Deemed University)
-            </div>
-            <div class="text-muted">
-                BVICAM ERP – Student Grievance Management Module
-            </div>
+            <div class="fw-semibold">© 2026 Bharati Vidyapeeth (Deemed University)</div>
+            <div style="opacity:0.65;">BVICAM ERP – Student Grievance Management Module</div>
         </div>
     </footer>
 
-    @* <!-- Floating Chatbot Widget -->
-    <div id="chatbot-toggle" title="Chat with us">
-        <i class="bi bi-chat-dots-fill" id="chatbot-icon-open"></i>
-        <i class="bi bi-x-lg d-none" id="chatbot-icon-close"></i>
-        <span class="chatbot-badge d-none" id="chatbot-badge">1</span>
-    </div> *@
 
-    <div id="chatbot-window" class="d-none">
-        <div id="chatbot-header">
-            <div class="d-flex align-items-center">
-                <div class="chatbot-avatar me-2">
-                    <i class="bi bi-robot"></i>
-                </div>
-                <div>
-                    <div class="fw-bold">BVICAM Support</div>
-                    <div class="chatbot-status"><span class="chatbot-status-dot"></span> Online</div>
+    <!-- ══════════════════════════════════════════════════
+         CHATBOT WIDGET
+    ══════════════════════════════════════════════════ -->
+    <!-- FAB -->
+    <div id="chatbot-toggle" title="Chat with BVICAM Support">
+        <i class="bi bi-chat-dots-fill" id="cb-fab-icon"></i>
+        <div class="fab-badge" id="cb-fab-badge">1</div>
+    </div>
+
+    <!-- Chat Window -->
+    <div id="chatbot-window">
+
+        <!-- Header -->
+        <div id="cb-header">
+            <div class="cb-bot-avatar"><i class="bi bi-robot"></i></div>
+            <div class="cb-bot-info">
+                <div class="cb-bot-name">BVICAM Support</div>
+                <div class="cb-bot-status">
+                    <div class="cb-status-dot"></div>
+                    <span class="cb-status-text">Online · Replies instantly</span>
                 </div>
             </div>
-            <button id="chatbot-close" class="btn btn-sm text-white p-0" title="Close">
-                <i class="bi bi-dash-lg"></i>
-            </button>
+            <div class="cb-header-actions">
+                <button class="cb-hdr-btn" id="cb-btn-min" title="Minimize"><i class="bi bi-dash-lg"></i></button>
+                <button class="cb-hdr-btn" id="cb-btn-close" title="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
         </div>
 
-        <div id="chatbot-messages">
-            <div class="chat-bubble assistant">
-                <div class="chat-bubble-content">
-                    Hello! 👋 I'm the BVICAM Grievance Support Bot. How can I help you today?
+        <!-- Messages -->
+        <div id="cb-messages">
+            <div class="cb-divider">Today</div>
+
+            <div class="cb-msg-row">
+                <div class="cb-msg-av cb-av-bot"><i class="bi bi-robot"></i></div>
+                <div>
+                    <div class="cb-bubble cb-bot-bubble">
+                        Hello! 👋 I'm the <strong>BVICAM Grievance Bot</strong>.<br>
+                        I can help you submit, track, or understand grievances. What do you need?
+                    </div>
+                    <div class="cb-time">Just now</div>
                 </div>
-                <div class="chat-time">Just now</div>
             </div>
-            <div id="chatbot-suggestions">
-                <button class="chatbot-chip" data-msg="How do I submit a grievance?">📝  Submit Grievance</button>
+
+            <div id="cb-suggestions">
+                <button class="chatbot-chip" data-msg="How do I submit a grievance?">📝 Submit Grievance</button>
                 <button class="chatbot-chip" data-msg="How do I track my grievance?">🔍 Track Status</button>
-                <button class="chatbot-chip" data-msg="What types of grievances can I submit?">📋 Grievance Types</button>
-                <button class="chatbot-chip" data-msg="Is my identity confidential?">🔒 Privacy Info</button>
+                <button class="chatbot-chip" data-msg="What types of grievances can I submit?">📋 Types</button>
+                <button class="chatbot-chip" data-msg="Is my identity confidential?">🔒 Privacy</button>
                 <button class="chatbot-chip" data-msg="How do I login?">🔑 Login Help</button>
                 <button class="chatbot-chip" data-msg="Contact support">📞 Contact</button>
             </div>
         </div>
 
-        <div id="chatbot-input-area">
-            <input type="text" id="chatbot-input" placeholder="Type your question..." autocomplete="off" />
-            <button id="chatbot-send" title="Send">
-                <i class="bi bi-send-fill"></i>
-            </button>
+        <!-- Input -->
+        <div id="cb-input-area">
+            <input type="text" id="cb-input" placeholder="Ask me anything…" autocomplete="off" />
+            <button id="cb-send"><i class="bi bi-send-fill"></i></button>
         </div>
+
     </div>
+    <!-- END CHATBOT -->
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/chatbot.js"></script>
+
+    <script>
+        (function () {
+            const toggle   = document.getElementById('chatbot-toggle');
+            const win      = document.getElementById('chatbot-window');
+            const fabIcon  = document.getElementById('cb-fab-icon');
+            const fabBadge = document.getElementById('cb-fab-badge');
+            const btnClose = document.getElementById('cb-btn-close');
+            const btnMin   = document.getElementById('cb-btn-min');
+            const input    = document.getElementById('cb-input');
+            const sendBtn  = document.getElementById('cb-send');
+            const msgArea  = document.getElementById('cb-messages');
+            const chips    = document.getElementById('cb-suggestions');
+            let isOpen = false;
+
+            function openChat() {
+                isOpen = true;
+                win.classList.add('cb-open');
+                toggle.classList.add('cb-open');
+                fabIcon.className = 'bi bi-x-lg';
+                fabBadge.classList.add('hidden');
+                setTimeout(() => input.focus(), 350);
+            }
+            function closeChat() {
+                isOpen = false;
+                win.classList.remove('cb-open');
+                toggle.classList.remove('cb-open');
+                fabIcon.className = 'bi bi-chat-dots-fill';
+            }
+
+            toggle.addEventListener('click', () => isOpen ? closeChat() : openChat());
+            btnClose.addEventListener('click', closeChat);
+            btnMin.addEventListener('click', closeChat);
+
+            function getTime() {
+                return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            const chipLabels = [
+                { msg: 'How do I submit a grievance?', label: '📝 Submit Grievance' },
+                { msg: 'How do I track my grievance?', label: '🔍 Track Status' },
+                { msg: 'What types of grievances can I submit?', label: '📋 Types' },
+                { msg: 'Is my identity confidential?', label: '🔒 Privacy' },
+                { msg: 'How do I login?', label: '🔑 Login Help' },
+                { msg: 'Contact support', label: '📞 Contact' }
+            ];
+
+            function appendChips() {
+                // Remove any existing chip block
+                const existing = document.getElementById('cb-suggestions');
+                if (existing) existing.remove();
+
+                const wrap = document.createElement('div');
+                wrap.id = 'cb-suggestions';
+                chipLabels.forEach(item => {
+                    const btn = document.createElement('button');
+                    btn.className = 'chatbot-chip';
+                    btn.dataset.msg = item.msg;
+                    btn.textContent = item.label;
+                    wrap.appendChild(btn);
+                });
+                msgArea.appendChild(wrap);
+                msgArea.scrollTop = msgArea.scrollHeight;
+            }
+
+            function appendMessage(text, sender) {
+                const row = document.createElement('div');
+                row.className = 'cb-msg-row' + (sender === 'user' ? ' cb-user' : '');
+
+                const av = document.createElement('div');
+                av.className = 'cb-msg-av ' + (sender === 'user' ? 'cb-av-user' : 'cb-av-bot');
+                av.innerHTML = sender === 'user'
+                    ? '<i class="bi bi-person-fill"></i>'
+                    : '<i class="bi bi-robot"></i>';
+
+                const inner  = document.createElement('div');
+                const bubble = document.createElement('div');
+                bubble.className = 'cb-bubble ' + (sender === 'user' ? 'cb-user-bubble' : 'cb-bot-bubble');
+                bubble.innerHTML = text;
+
+                const time = document.createElement('div');
+                time.className = 'cb-time';
+                time.textContent = getTime();
+
+                inner.appendChild(bubble);
+                inner.appendChild(time);
+                row.appendChild(av);
+                row.appendChild(inner);
+                msgArea.appendChild(row);
+                msgArea.scrollTop = msgArea.scrollHeight;
+            }
+
+            function showTyping() {
+                const row = document.createElement('div');
+                row.className = 'cb-msg-row'; row.id = 'cb-typing-row';
+                const av = document.createElement('div');
+                av.className = 'cb-msg-av cb-av-bot';
+                av.innerHTML = '<i class="bi bi-robot"></i>';
+                const ind = document.createElement('div');
+                ind.className = 'cb-typing';
+                ind.innerHTML = '<div class="cb-typing-dot"></div><div class="cb-typing-dot"></div><div class="cb-typing-dot"></div>';
+                row.appendChild(av); row.appendChild(ind);
+                msgArea.appendChild(row);
+                msgArea.scrollTop = msgArea.scrollHeight;
+            }
+            function removeTyping() {
+                const t = document.getElementById('cb-typing-row');
+                if (t) t.remove();
+            }
+
+            const responses = {
+                "how do i submit a grievance?":
+                    "To submit a grievance, log in with your student credentials and click <strong>Submit Grievance</strong> in the top navbar. Fill in the category, description, and any attachments, then hit Submit. You'll receive a confirmation with a tracking ID. 📝",
+                "how do i track my grievance?":
+                    "Once logged in, go to <strong>My Grievances</strong> to see all your submissions. Each entry shows the current status — Pending, In Review, or Resolved — along with coordinator remarks. 🔍",
+                "what types of grievances can i submit?":
+                    "You can submit grievances related to: <strong>Academic</strong> (marks, attendance), <strong>Administrative</strong> (fees, documents), <strong>Facilities</strong> (labs, hostel), and <strong>Faculty conduct</strong>. If unsure, choose 'Other'. 📋",
+                "is my identity confidential?":
+                    "Yes! Your identity is fully protected. Only the assigned coordinator and admin can view your submission. Your name is never shared with the parties involved. 🔒",
+                "how do i login?":
+                    "Click the <strong>Login</strong> button in the top-right of the portal. Use your institute-issued Student ID and password. If you've forgotten your password, contact the admin office. 🔑",
+                "contact support":
+                    "You can reach the Grievance Cell at:<br>📧 <strong>grievance@bvicam.ac.in</strong><br>📞 <strong>+91-11-XXXX-XXXX</strong><br>🕐 Mon–Fri, 9 AM – 5 PM"
+            };
+
+            function getBotReply(msg) {
+                return responses[msg.toLowerCase().trim()]
+                    || "I'm not sure about that. You can reach our support team at <strong>grievance@bvicam.ac.in</strong> for detailed assistance. Is there anything else I can help with? 😊";
+            }
+
+            function handleSend(msg) {
+                const text = (msg || input.value).trim();
+                if (!text) return;
+                input.value = '';
+                // Remove chips when user sends a message
+                const existingChips = document.getElementById('cb-suggestions');
+                if (existingChips) existingChips.remove();
+                appendMessage(text, 'user');
+                showTyping();
+                setTimeout(() => {
+                    removeTyping();
+                    appendMessage(getBotReply(text), 'bot');
+                    // Re-show chips after every bot reply
+                    appendChips();
+                }, 900 + Math.random() * 400);
+            }
+
+            sendBtn.addEventListener('click', () => handleSend());
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
+            // Initial chips — use event delegation since chips are dynamically added
+            msgArea.addEventListener('click', e => {
+                const chip = e.target.closest('.chatbot-chip');
+                if (chip) handleSend(chip.dataset.msg);
+            });
+        })();
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
