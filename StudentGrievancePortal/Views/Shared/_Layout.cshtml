@@ -73,9 +73,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
         }
 
-        /* ══════════════════════════════════════════════════
-                           CHATBOT
-                        ══════════════════════════════════════════════════ */
         #chatbot-toggle {
             position: fixed;
             bottom: 28px;
@@ -105,6 +102,7 @@
             #chatbot-toggle i {
                 color: white;
                 font-size: 1.4rem;
+                z-index:99999;
             }
 
         .fab-badge {
@@ -128,26 +126,25 @@
                 display: none;
             }
 
-        /* Window */
         #chatbot-window {
             position: fixed;
-            bottom: 100px;
+            bottom: 95px;
             right: 28px;
             width: 370px;
-            max-height: 580px;
+            height: calc(100vh - 160px);
+            max-height: 600px;
             background: #f4f6fb;
             border-radius: 20px;
             box-shadow: 0 24px 60px rgba(13,34,99,0.22), 0 4px 16px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            z-index: 1049;
+            z-index: 99998 !important;
             transform: scale(0.85) translateY(20px);
             opacity: 0;
             pointer-events: none;
             transform-origin: bottom right;
-            transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), opacity 0.25s ease;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .25s ease;
         }
 
             #chatbot-window.cb-open {
@@ -156,7 +153,6 @@
                 pointer-events: all;
             }
 
-        /* Header */
         #cb-header {
             background: #0d2263 !important;
             padding: 16px 18px;
@@ -281,7 +277,6 @@
             border-color: #c8102e;
         }
 
-        /* Messages */
         #cb-messages {
             flex: 1;
             overflow-y: auto;
@@ -382,7 +377,6 @@
             text-align: right;
         }
 
-        /* Chips */
         #cb-suggestions {
             display: flex;
             flex-wrap: wrap;
@@ -413,7 +407,6 @@
                 box-shadow: 0 4px 12px rgba(13,34,99,0.2);
             }
 
-        /* Typing */
         .cb-typing {
             display: flex;
             align-items: center;
@@ -452,7 +445,6 @@
             }
         }
 
-        /* Divider */
         .cb-divider {
             display: flex;
             align-items: center;
@@ -472,7 +464,6 @@
                 background: #e2e6f0;
             }
 
-        /* Input */
         #cb-input-area {
             background: white;
             border-top: 1px solid #e8ecf5;
@@ -681,19 +672,13 @@
         </div>
     </footer>
 
-    <!-- ══════════════════════════════════════════════════
-         CHATBOT WIDGET
-    ══════════════════════════════════════════════════ -->
-    <!-- FAB -->
     <div id="chatbot-toggle" title="Chat with BVICAM Support">
         <i class="bi bi-chat-dots-fill" id="cb-fab-icon"></i>
         <div class="fab-badge" id="cb-fab-badge">1</div>
     </div>
 
-    <!-- Chat Window -->
     <div id="chatbot-window">
 
-        <!-- Header -->
         <div id="cb-header">
             <div class="cb-bot-avatar"><i class="bi bi-robot"></i></div>
             <div class="cb-bot-info">
@@ -709,7 +694,6 @@
             </div>
         </div>
 
-        <!-- Messages -->
         <div id="cb-messages">
             <div class="cb-divider">Today</div>
 
@@ -734,7 +718,6 @@
             </div>
         </div>
 
-        <!-- Input -->
         <div id="cb-input-area">
             <input type="text" id="cb-input" placeholder="Ask me anything…" autocomplete="off" />
             <button id="cb-send"><i class="bi bi-send-fill"></i></button>
@@ -791,7 +774,6 @@
             ];
 
             function appendChips() {
-                // Remove any existing chip block
                 const existing = document.getElementById('cb-suggestions');
                 if (existing) existing.remove();
 
@@ -877,7 +859,6 @@
                 const text = (msg || input.value).trim();
                 if (!text) return;
                 input.value = '';
-                // Remove chips when user sends a message
                 const existingChips = document.getElementById('cb-suggestions');
                 if (existingChips) existingChips.remove();
                 appendMessage(text, 'user');
@@ -885,14 +866,12 @@
                 setTimeout(() => {
                     removeTyping();
                     appendMessage(getBotReply(text), 'bot');
-                    // Re-show chips after every bot reply
                     appendChips();
                 }, 900 + Math.random() * 400);
             }
 
             sendBtn.addEventListener('click', () => handleSend());
             input.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
-            // Initial chips — use event delegation since chips are dynamically added
             msgArea.addEventListener('click', e => {
                 const chip = e.target.closest('.chatbot-chip');
                 if (chip) handleSend(chip.dataset.msg);

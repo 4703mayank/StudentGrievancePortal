@@ -4,60 +4,115 @@
 }
 
 <style>
-    @@media print {
-        .no-print, .navbar, .btn-group, .card-header, .stats-card, .list-group, #statusChart {
-            display: none !important;
-        }
-
-        .container {
-            width: 100% !important;
-            max-width: none !important;
-            margin: 0 !important;
-        }
-
-        .table-responsive {
-            overflow: visible !important;
-            max-height: none !important;
-        }
-
-        body::before {
-            content: "BVICAM Official Grievance Report";
-            display: block;
-            text-align: center;
-            font-size: 22px;
-            margin-bottom: 20px;
-        }
+    body {
+        background: #f4f6f9;
+        font-family: 'Segoe UI', sans-serif;
+        color: #2c3e50;
     }
 
-    .stats-icon {
-        font-size: 2.2rem;
-        opacity: 0.25;
+    .glass-card {
+        background: rgba(255,255,255,0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        transition: 0.25s ease;
     }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+        }
+
+    .stats-card {
+        border-radius: 16px;
+        padding: 20px;
+        background: white;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        transition: 0.25s;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+        }
+
+    .table {
+        background: white;
+    }
+
+        .table thead {
+            background: #f8f9fa;
+        }
+
+    .table-hover tbody tr:hover {
+        background: #f2f6ff;
+    }
+
+    .badge {
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #0d6efd;
+        }
 
     .priority-item {
         transition: 0.2s;
         cursor: pointer;
-        border-left: 4px solid transparent;
     }
 
         .priority-item:hover {
-            background-color: #f8f9fa;
+            background-color: #f1f3f5;
         }
 
     .active-priority {
         background-color: #0d6efd !important;
         color: white !important;
-        border-left: 4px solid #004085 !important;
     }
 
-        .active-priority .badge {
-            background-color: white !important;
-            color: #0d6efd !important;
+    @@media (max-width: 768px) {
+        .container
+
+    {
+        padding: 12px !important;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .btn-group {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+        .btn-group .btn {
+            width: 100%;
+            margin-bottom: 6px;
         }
 
-    .sticky-top {
-        z-index: 1020;
+    .table-responsive {
+        max-height: 400px;
     }
+
+    }
+
+    .navbar {
+        z-index: 2000 !important;
+    }
+
+    .table thead.sticky-top {
+        z-index: 1 !important;
+    }
+
 </style>
 
 <div class="container mt-4">
