@@ -651,28 +651,6 @@
             transition: background 0.2s, transform 0.15s;
             flex-shrink: 0;
         }
-
-            #cb-send:hover {
-                background: #163088;
-                transform: scale(1.05);
-            }
-
-            #cb-send:active {
-                transform: scale(0.95);
-            }
-
-        @@media (max-width: 420px) {
-            #chatbot-window {
-                width: calc(100vw - 24px);
-                right: 12px;
-                bottom: 90px;
-            }
-
-            #chatbot-toggle {
-                bottom: 18px;
-                right: 18px;
-            }
-        }
     </style>
 </head>
 
@@ -832,8 +810,12 @@
         <div class="fab-badge" id="cb-fab-badge">1</div>
     </div>
 
-    <!-- Chat Window -->
-    <div id="chatbot-window">
+    @* <!-- Floating Chatbot Widget -->
+    <div id="chatbot-toggle" title="Chat with us">
+        <i class="bi bi-chat-dots-fill" id="chatbot-icon-open"></i>
+        <i class="bi bi-x-lg d-none" id="chatbot-icon-close"></i>
+        <span class="chatbot-badge d-none" id="chatbot-badge">1</span>
+    </div> *@
 
         <!-- Header -->
         <div id="cb-header">
@@ -888,163 +870,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        (function () {
-            const toggle   = document.getElementById('chatbot-toggle');
-            const win      = document.getElementById('chatbot-window');
-            const fabIcon  = document.getElementById('cb-fab-icon');
-            const fabBadge = document.getElementById('cb-fab-badge');
-            const btnClose = document.getElementById('cb-btn-close');
-            const btnMin   = document.getElementById('cb-btn-min');
-            const input    = document.getElementById('cb-input');
-            const sendBtn  = document.getElementById('cb-send');
-            const msgArea  = document.getElementById('cb-messages');
-            const chips    = document.getElementById('cb-suggestions');
-            let isOpen = false;
-
-            function openChat() {
-                isOpen = true;
-                win.classList.add('cb-open');
-                toggle.classList.add('cb-open');
-                fabIcon.className = 'bi bi-x-lg';
-                fabBadge.classList.add('hidden');
-                setTimeout(() => input.focus(), 350);
-            }
-            function closeChat() {
-                isOpen = false;
-                win.classList.remove('cb-open');
-                toggle.classList.remove('cb-open');
-                fabIcon.className = 'bi bi-chat-dots-fill';
-            }
-
-            toggle.addEventListener('click', () => isOpen ? closeChat() : openChat());
-            btnClose.addEventListener('click', closeChat);
-            btnMin.addEventListener('click', closeChat);
-
-            function getTime() {
-                return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-
-            const chipLabels = [
-                { msg: 'How do I submit a grievance?', label: '📝 Submit Grievance' },
-                { msg: 'How do I track my grievance?', label: '🔍 Track Status' },
-                { msg: 'What types of grievances can I submit?', label: '📋 Types' },
-                { msg: 'Is my identity confidential?', label: '🔒 Privacy' },
-                { msg: 'How do I login?', label: '🔑 Login Help' },
-                { msg: 'Contact support', label: '📞 Contact' }
-            ];
-
-            function appendChips() {
-                // Remove any existing chip block
-                const existing = document.getElementById('cb-suggestions');
-                if (existing) existing.remove();
-
-                const wrap = document.createElement('div');
-                wrap.id = 'cb-suggestions';
-                chipLabels.forEach(item => {
-                    const btn = document.createElement('button');
-                    btn.className = 'chatbot-chip';
-                    btn.dataset.msg = item.msg;
-                    btn.textContent = item.label;
-                    wrap.appendChild(btn);
-                });
-                msgArea.appendChild(wrap);
-                msgArea.scrollTop = msgArea.scrollHeight;
-            }
-
-            function appendMessage(text, sender) {
-                const row = document.createElement('div');
-                row.className = 'cb-msg-row' + (sender === 'user' ? ' cb-user' : '');
-
-                const av = document.createElement('div');
-                av.className = 'cb-msg-av ' + (sender === 'user' ? 'cb-av-user' : 'cb-av-bot');
-                av.innerHTML = sender === 'user'
-                    ? '<i class="bi bi-person-fill"></i>'
-                    : '<i class="bi bi-robot"></i>';
-
-                const inner  = document.createElement('div');
-                const bubble = document.createElement('div');
-                bubble.className = 'cb-bubble ' + (sender === 'user' ? 'cb-user-bubble' : 'cb-bot-bubble');
-                bubble.innerHTML = text;
-
-                const time = document.createElement('div');
-                time.className = 'cb-time';
-                time.textContent = getTime();
-
-                inner.appendChild(bubble);
-                inner.appendChild(time);
-                row.appendChild(av);
-                row.appendChild(inner);
-                msgArea.appendChild(row);
-                msgArea.scrollTop = msgArea.scrollHeight;
-            }
-
-            function showTyping() {
-                const row = document.createElement('div');
-                row.className = 'cb-msg-row'; row.id = 'cb-typing-row';
-                const av = document.createElement('div');
-                av.className = 'cb-msg-av cb-av-bot';
-                av.innerHTML = '<i class="bi bi-robot"></i>';
-                const ind = document.createElement('div');
-                ind.className = 'cb-typing';
-                ind.innerHTML = '<div class="cb-typing-dot"></div><div class="cb-typing-dot"></div><div class="cb-typing-dot"></div>';
-                row.appendChild(av); row.appendChild(ind);
-                msgArea.appendChild(row);
-                msgArea.scrollTop = msgArea.scrollHeight;
-            }
-            function removeTyping() {
-                const t = document.getElementById('cb-typing-row');
-                if (t) t.remove();
-            }
-
-            const responses = {
-                "how do i submit a grievance?":
-                    "To submit a grievance, log in with your student credentials and click <strong>Submit Grievance</strong> in the top navbar. Fill in the category, description, and any attachments, then hit Submit. You'll receive a confirmation with a tracking ID. 📝",
-                "how do i track my grievance?":
-                    "Once logged in, go to <strong>My Grievances</strong> to see all your submissions. Each entry shows the current status — Pending, In Review, or Resolved — along with coordinator remarks. 🔍",
-                "what types of grievances can i submit?":
-                    "You can submit grievances related to: <strong>Academic</strong> (marks, attendance), <strong>Administrative</strong> (fees, documents), <strong>Facilities</strong> (labs, hostel), and <strong>Faculty conduct</strong>. If unsure, choose 'Other'. 📋",
-                "is my identity confidential?":
-                    "Yes! Your identity is fully protected. Only the assigned coordinator and admin can view your submission. Your name is never shared with the parties involved. 🔒",
-                "how do i login?":
-                    "Click the <strong>Login</strong> button in the top-right of the portal. Use your institute-issued Student ID and password. If you've forgotten your password, contact the admin office. 🔑",
-                "contact support":
-                    "You can reach the Grievance Cell at:<br>📧 <strong>grievance@bvicam.ac.in</strong><br>📞 <strong>+91-11-XXXX-XXXX</strong><br>🕐 Mon–Fri, 9 AM – 5 PM"
-            };
-
-            function getBotReply(msg) {
-                return responses[msg.toLowerCase().trim()]
-                    || "I'm not sure about that. You can reach our support team at <strong>grievance@bvicam.ac.in</strong> for detailed assistance. Is there anything else I can help with? 😊";
-            }
-
-            function handleSend(msg) {
-                const text = (msg || input.value).trim();
-                if (!text) return;
-                input.value = '';
-                // Remove chips when user sends a message
-                const existingChips = document.getElementById('cb-suggestions');
-                if (existingChips) existingChips.remove();
-                appendMessage(text, 'user');
-                showTyping();
-                setTimeout(() => {
-                    removeTyping();
-                    appendMessage(getBotReply(text), 'bot');
-                    // Re-show chips after every bot reply
-                    appendChips();
-                }, 900 + Math.random() * 400);
-            }
-
-            sendBtn.addEventListener('click', () => handleSend());
-            input.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
-            // Initial chips — use event delegation since chips are dynamically added
-            msgArea.addEventListener('click', e => {
-                const chip = e.target.closest('.chatbot-chip');
-                if (chip) handleSend(chip.dataset.msg);
-            });
-        })();
-    </script>
-
+    <script src="~/js/chatbot.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
