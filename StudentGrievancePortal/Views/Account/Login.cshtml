@@ -1,188 +1,165 @@
 ﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
     ViewData["Title"] = "Login";
 }
 
-<style>
-    .login-wrapper {
-        width: 100%;
-        max-width: 430px;
-        margin: 0 auto;
-        animation: fadeUp 0.45s ease both;
-    }
-    @@keyframes fadeUp {
-        from {
-            opacity: 0;
-            transform: translateY(22px);
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BVICAM ERP Login</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary: #0b3c6f;
+            --primary-light: #1f5ea8;
+            --border: #e5e9f2;
+            --text-muted: #6c757d;
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .login-card {
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 36px 32px;
-        box-shadow: 0 20px 60px rgba(13,34,99,0.13), 0 4px 16px rgba(0,0,0,0.06);
-    }
-
-    .card-header-block {
-        text-align: center;
-        margin-bottom: 28px;
-    }
-
-    .card-icon {
-        width: 56px;
-        height: 56px;
-        background: linear-gradient(135deg, #0d2263, #1e3a9f);
-        border-radius: 16px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        color: white;
-        margin-bottom: 14px;
-        box-shadow: 0 6px 18px rgba(13,34,99,0.25);
-    }
-
-    .card-header-block h4 {
-        font-weight: 700;
-        color: #0d2263;
-        font-size: 1.25rem;
-        margin-bottom: 4px;
-    }
-
-    .card-header-block p {
-        color: #8892aa;
-        font-size: 0.82rem;
-    }
-
-    .role-toggle {
-        display: flex;
-        background: #eef2f9;
-        border-radius: 12px;
-        padding: 5px;
-        margin-bottom: 26px;
-        gap: 4px;
-    }
-
-    .role-btn {
-        flex: 1;
-        border: none;
-        background: transparent;
-        padding: 10px 8px;
-        font-weight: 600;
-        font-size: 0.83rem;
-        border-radius: 9px;
-        transition: all 0.22s ease;
-        color: #6b7a9e;
-        cursor: pointer;
-    }
-
-        .role-btn.active {
-            background: #0d2263;
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(13,34,99,0.28);
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7fb;
         }
 
-    .field-label {
-        font-weight: 600;
-        font-size: 0.8rem;
-        color: #3a4568;
-        margin-bottom: 6px;
-        display: block;
-    }
-
-    .input-wrap {
-        position: relative;
-        margin-bottom: 18px;
-    }
-
-    .input-icon {
-        position: absolute;
-        left: 13px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #8892aa;
-        font-size: 0.95rem;
-        pointer-events: none;
-    }
-
-    .field-input {
-        width: 100%;
-        padding: 11px 14px 11px 38px;
-        border: 1.5px solid #dde3f5;
-        border-radius: 10px;
-        font-size: 0.875rem;
-        color: #1a2340;
-        background: #f8faff;
-        outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-        .field-input:focus {
-            border-color: #0d2263;
-            box-shadow: 0 0 0 3px rgba(13,34,99,0.09);
-            background: #fff;
+        .login-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            padding: 14px 40px;
         }
 
-        .field-input::placeholder {
-            color: #b0bada;
+        .brand-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 18px;
         }
 
-    .toggle-pass {
-        position: absolute;
-        right: 13px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #8892aa;
-        cursor: pointer;
-        font-size: 0.95rem;
-        background: none;
-        border: none;
-        padding: 0;
-    }
+            .brand-link img {
+                height: 38px;
+                margin-right: 10px;
+            }
 
-        .toggle-pass:hover {
-            color: #0d2263;
+            .brand-link:hover {
+                color: var(--primary-light);
+            }
+
+        .page-center {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-    .error-box {
-        background: #fff5f5;
-        border: 1px solid #ffc9c9;
-        border-radius: 8px;
-        padding: 10px 14px;
-        font-size: 0.8rem;
-        color: #c8102e;
-        margin-bottom: 16px;
-        display: flex;
-        align-items: center;
-        gap: 7px;
-    }
+        .login-wrapper {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeUp .5s ease;
+        }
 
-    .btn-login {
-        width: 100%;
-        padding: 13px;
-        background: linear-gradient(135deg, #0d2263, #1e3a9f);
-        border: none;
-        border-radius: 10px;
-        color: white;
-        font-weight: 700;
-        font-size: 0.88rem;
-        letter-spacing: 0.06em;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        margin-top: 6px;
-    }
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
 
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(13,34,99,0.3);
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 25px 60px rgba(15, 35, 95, 0.15);
+            border: 1px solid var(--border);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+            .brand h3 {
+                font-weight: 700;
+                color: var(--primary);
+                margin-bottom: 5px;
+            }
+
+            .brand small {
+                color: var(--text-muted);
+            }
+
+        .role-toggle {
+            display: flex;
+            background: #eef2f7;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+
+        .role-btn {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: 0.25s ease;
+            color: #555;
+        }
+
+            .role-btn.active {
+                background: #ffffff;
+                color: var(--primary);
+                box-shadow: 0 4px 12px rgba(0,0,0,.08);
+            }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .form-control {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+            .form-control:focus {
+                border-color: var(--primary-light);
+                box-shadow: 0 0 0 3px rgba(13,110,253,.1);
+            }
+
+        .input-group-text {
+            background: #ffffff;
+            border: 1px solid var(--border);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border: none;
+            padding: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-radius: 8px;
             color: white;
+            transition: 0.25s ease;
         }
+
+            .btn-login:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(0,0,0,.15);
+            }
 
         .footer-text {
             text-align: center;
@@ -190,84 +167,99 @@
             font-size: 13px;
             color: var(--text-muted);
         }
-
-
     </style>
 
-<div class="login-wrapper">
-    <div class="login-card">
+</head>
 
-        <div class="card-header-block">
-            <div class="card-icon"><i class="bi bi-shield-lock-fill"></i></div>
-            <h4>Sign In to Portal</h4>
-            <p>Enter your ERP credentials to continue</p>
-        </div>
+<body>
 
-        <form asp-action="Login" method="post">
 
-            <div class="role-toggle">
-                <button type="button" class="role-btn active" onclick="setRole(1, this)">
-                    <i class="bi bi-mortarboard me-1"></i> Student
-                </button>
-                <button type="button" class="role-btn" onclick="setRole(2, this)">
-                    <i class="bi bi-person-badge me-1"></i> Coordinator
-                </button>
-                <input type="hidden" name="userRole" id="userRole" value="1" />
-            </div>
-
-            <label class="field-label">ERP ID</label>
-            <div class="input-wrap">
-                <i class="bi bi-person input-icon"></i>
-                <input name="erpId" class="field-input" placeholder="e.g. STU001 or CC001" required />
-            </div>
-
-            <label class="field-label">Password</label>
-            <div class="input-wrap">
-                <i class="bi bi-lock input-icon"></i>
-                <input name="password" type="password" id="passField" class="field-input" placeholder="••••••••" required />
-                <button type="button" class="toggle-pass" onclick="togglePass()">
-                    <i class="bi bi-eye" id="eyeIcon"></i>
-                </button>
-            </div>
-
-            @if (ViewBag.Error != null)
-            {
-                <div class="error-box">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    @ViewBag.Error
-                </div>
-            }
-
-            <button type="submit" class="btn-login">
-                <i class="bi bi-box-arrow-in-right me-2"></i> LOGIN TO PORTAL
-            </button>
-
-        </form>
-
-        <div class="card-footer-note">
-            © 2026 BVICAM ERP System · Bharati Vidyapeeth (Deemed University)
-        </div>
-
+    <div class="login-navbar d-flex justify-content-between align-items-center">
+        <a asp-controller="Home" asp-action="Index" class="brand-link">
+            <img src="~/images/bvicam-logo.png" alt="logo" />
+            BVICAM GRIEVANCES
+        </a>
     </div>
-</div>
 
-@section Scripts {
+
+    <div class="page-center">
+        <div class="login-wrapper">
+            <div class="login-card">
+                <div class="brand">
+                    <h3>BVICAM ERP</h3>
+                    <small>Grievance Management Portal</small>
+                </div>
+
+                <form asp-action="Login" method="post">
+
+                    <div class="role-toggle">
+                        <button type="button" class="role-btn active" onclick="setRole(1,this)">
+                            <i class="bi bi-mortarboard me-1"></i> Student
+                        </button>
+                        <button type="button" class="role-btn" onclick="setRole(2,this)">
+                            <i class="bi bi-person-badge me-1"></i> Coordinator
+                        </button>
+                        <input type="hidden" name="userRole" id="userRole" value="1" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">ERP ID</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input name="erpId" class="form-control" placeholder="STU001 or CC001" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input name="password" type="password" id="pass" class="form-control" placeholder="••••••••" required />
+                            <span class="input-group-text" style="cursor:pointer" onclick="togglePass()">
+                                <i class="bi bi-eye" id="eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger p-2 small">@ViewBag.Error</div>
+                    }
+
+                    <button type="submit" class="btn btn-login w-100 mt-3">
+                        LOGIN TO PORTAL
+                    </button>
+                </form>
+
+                <div class="footer-text">
+                    © 2026 BVICAM ERP System
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         function setRole(role, btn) {
-            document.getElementById('userRole').value = role;
-            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            document.getElementById("userRole").value = role;
+            document.querySelectorAll(".role-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
         }
+
         function togglePass() {
-            const f = document.getElementById('passField');
-            const e = document.getElementById('eyeIcon');
-            if (f.type === 'password') {
-                f.type = 'text';
-                e.classList.replace('bi-eye', 'bi-eye-slash');
+            const p = document.getElementById("pass");
+            const eye = document.getElementById("eye");
+            if (p.type === "password") {
+                p.type = "text";
+                eye.classList.replace("bi-eye", "bi-eye-slash");
             } else {
-                f.type = 'password';
-                e.classList.replace('bi-eye-slash', 'bi-eye');
+                p.type = "password";
+                eye.classList.replace("bi-eye-slash", "bi-eye");
             }
         }
     </script>
-}
+
+</body>
+</html>
