@@ -29,7 +29,7 @@ namespace StudentGrievancePortal.services
 
             var apiKey = _config["Gemini:ApiKey"];
             Console.WriteLine("API KEY: " + apiKey);
-            var url = $"https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key={apiKey}";
+            var url ="https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey;
 
             var messagePrompt =
                 "You are a chatbot for BVICAM Student Grievance Portal. " +
