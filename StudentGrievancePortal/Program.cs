@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StudentGrievancePortal.Data;
 using StudentGrievancePortal.Models;
+using StudentGrievancePortal.services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddScoped<GeminiService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));

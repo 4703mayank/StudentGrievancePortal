@@ -850,25 +850,85 @@
                     "You can reach the Grievance Cell at:<br>📧 <strong>grievance@bvicam.ac.in</strong><br>📞 <strong>+91-11-XXXX-XXXX</strong><br>🕐 Mon–Fri, 9 AM – 5 PM"
             };
 
-            function getBotReply(msg) {
-                return responses[msg.toLowerCase().trim()]
-                    || "I'm not sure about that. You can reach our support team at <strong>grievance@bvicam.ac.in</strong> for detailed assistance. Is there anything else I can help with? 😊";
+            // function getBotReply(msg) {
+            //     return responses[msg.toLowerCase().trim()]
+            //         || "I'm not sure about that. You can reach our support team at <strong>grievance@bvicam.ac.in</strong> for detailed assistance. Is there anything else I can help with? 😊";
+            // }
+
+          // async function handleSend(msg) {
+          //       const text = (msg || input.value).trim();
+          //       if (!text) return;
+
+          //       input.value = '';
+
+          //       const existingChips = document.getElementById('cb-suggestions');
+          //       if (existingChips) existingChips.remove();
+
+          //       appendMessage(text, 'user');
+          //       showTyping();
+
+          //       setTimeout(() => {
+          //           removeTyping();
+          //           appendMessage(getBotReply(text), 'bot');
+          //           appendChips();
+          //       }, 900 + Math.random() * 400);
+          //   }
+        let lastMessageTime = 0;
+        async function handleSend(msg) {
+        const text = (msg || input.value).trim();
+        if (!text) return;
+
+        const now = Date.now();
+        if (now - lastMessageTime < 2000) return;
+        lastMessageTime = now;
+        if (text.length > 300) {
+            appendMessage("⚠️ Please keep your question under 300 characters.", "bot");
+            return;
+        }
+            input.value = '';
+
+            const existingChips = document.getElementById('cb-suggestions');
+            if (existingChips) existingChips.remove();
+
+            appendMessage(text, 'user');
+            showTyping();
+
+            try {
+
+                const res = await fetch("/Chat/Ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message: text })
+                });
+
+                if (!res.ok) {
+                    throw new Error("Server error");
+                }
+
+                const data = await res.json();
+
+                removeTyping();
+
+                appendMessage(
+                    data.reply || "I couldn't process that request.",
+                    'bot'
+                );
+
+            }
+            catch (err) {
+
+                removeTyping();
+
+                appendMessage(
+                    "⚠️ The support assistant is temporarily unavailable. Please try again shortly.",
+                    'bot'
+                );
             }
 
-            function handleSend(msg) {
-                const text = (msg || input.value).trim();
-                if (!text) return;
-                input.value = '';
-                const existingChips = document.getElementById('cb-suggestions');
-                if (existingChips) existingChips.remove();
-                appendMessage(text, 'user');
-                showTyping();
-                setTimeout(() => {
-                    removeTyping();
-                    appendMessage(getBotReply(text), 'bot');
-                    appendChips();
-                }, 900 + Math.random() * 400);
-            }
+            appendChips();
+        }
 
             sendBtn.addEventListener('click', () => handleSend());
             input.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
