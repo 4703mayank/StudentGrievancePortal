@@ -14,7 +14,7 @@ namespace StudentGrievancePortal.services
             _http = new HttpClient();
         }
 
-        public async Task<string> AskGemini(string message)
+        public async Task<string> AskGemini(string message, StudentStats? stats = null)
         {
             var lower = message.ToLower();
 
@@ -34,8 +34,14 @@ namespace StudentGrievancePortal.services
             var messagePrompt =
                 "You are a chatbot for BVICAM Student Grievance Portal. " +
                 "Help students with grievance submission, tracking, login issues and portal navigation. " +
-                "Give short and helpful answers.\n\n" +
-                "Student Question: " + message;
+                "Give short and helpful answers.\n\n";
+
+            if (stats != null)
+            {
+                messagePrompt += $"The logged-in student has submitted {stats.Total} grievance{(stats.Total == 1 ? "" : "s")}. {stats.Pending} pending, {stats.Resolved} resolved.\n\n";
+            }
+
+            messagePrompt += "Student Question: " + message;
 
             var body = new
             {

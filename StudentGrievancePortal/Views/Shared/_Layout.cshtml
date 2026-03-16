@@ -790,6 +790,9 @@
                 msgArea.scrollTop = msgArea.scrollHeight;
             }
 
+            // Current logged-in user id (or null). Rendered from server session.
+            const currentUserId = @(HttpContextAccessor.HttpContext.Session.GetInt32("UserId")?.ToString() ?? "null");
+
             function appendMessage(text, sender) {
                 const row = document.createElement('div');
                 row.className = 'cb-msg-row' + (sender === 'user' ? ' cb-user' : '');
@@ -900,7 +903,7 @@
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ message: text })
+                    body: JSON.stringify({ message: text, userId: currentUserId })
                 });
 
                 if (!res.ok) {
